@@ -29,5 +29,8 @@ includes: includes.hs
 %.pdf: %.md includes
 	./includes < $< | $(PANDOC) -c -s -f $(IFORMAT) --latex-engine=xelatex $(FLAGS) -o $@
 
+preview: all
+	xdg-open $(HTML)
+
 clean:
 	-rm $(CHAPTERS) $(HTML)
