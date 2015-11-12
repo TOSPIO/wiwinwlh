@@ -1,4 +1,4 @@
-<p class="center logo">
+n<p class="center logo">
 ![](img/title.png)
 </p>
 
@@ -364,8 +364,6 @@ Hackage给人们带来了诸多好处。其中有两个重要思想：
 GHCi
 ----
 
-GHCi is the interactive shell for the GHC compiler. GHCi is where we will spend
-most of our time.
 GHCi是GHC编译器的交互式shell环境。我们多半时间都花在这里。
 
 命令        快捷键      动作
