@@ -1,4 +1,4 @@
-n<p class="center logo">
+<p class="center logo">
 ![](img/title.png)
 </p>
 
@@ -331,12 +331,12 @@ Hackage
 -------
 
 Hackage是事实上的开源Haskell包集结地。作为一种“过渡语言”（译者注：原谅是transitional language。不太确定是啥意思_(:з」∠)_），
-Hackage给人们带来了诸多好处。其中有两个重要思想：
+Hackage给人们带来了诸多好处。其中流传着两个重要思想：
 
 **可复用的代码/构件**
 
 这种思想认为：库应该是稳定的、社区支持的构件，其他人可以在此基础上构建更高级的功能。
-库的作者写这个库用以包装他们对某个问题域的理解，以便于其他人以此基础进行开发。
+作者写库用以包装他们对某个问题域的理解，以便于其他人以此基础进行开发。
 
 **临时区域/请求他人提供评论**
 
@@ -543,7 +543,7 @@ cabal install ghci-ng
 
 * [A Vim + Haskell Workflow](http://www.stephendiehl.com/posts/vim_haskell.html)
 
-Bottom（没人抗议的话叫屁股算了）
+底元素（Bottom）
 -------
 
 ```haskell
@@ -551,7 +551,7 @@ error :: String -> a
 undefined :: a
 ```
 
-bottom是所有类型的唯一共有值。当对它求值时，按照Haskell的语义，不再输出任何有意义的值。
+底元素是所有类型的唯一共有值。当对它求值时，按照Haskell的语义，不再输出任何有意义的值。
 通常写作“⊥”。（意为编译器把你艹翻了）
 
 下例为一个死循环表示。
@@ -568,7 +568,7 @@ f :: a -> Complicated Type
 f = undefined -- 明天再写，先把类型检查过了
 ```
 
-通过非完全模式匹配创建的部分函数可能是产生bottom的最常见原因：
+通过不完整模式匹配创建的部分函数可能是产生bottom的最常见原因：
 
 ```haskell
 data F = A | B
@@ -625,27 +625,22 @@ listToMaybe (a:_)  =  Just a
 
 See: [Avoiding Partial Functions](https://wiki.haskell.org/Avoiding_partial_functions)
 
-Exhaustiveness
+模式完整度
 --------------
 
-Pattern matching in Haskell allows for the possibility of non-exhaustive
-patterns, or cases which are not exhaustive and instead of yielding a value
-diverge.
+Haskell允许不完整的模式匹配和case子句。（TODO: or cases which are not exhaustive and instead
+of yielding a value diverge）
 
-Partial functions from non-exhaustivity are controversial subject, and large use
-of non-exhaustive patterns is considered a dangerous code smell. Although the
-complete removal of non-exhaustive patterns from the language entirely would
-itself be too restrictive and forbid too many valid programs.
+由不完整模式或case子句产生的部分函数是存在争议的，大量使用不完整模式是危险讯号，从语言中完全移除这个功能
+却也显得过于严格，导致很多好用的程序都失效了。
 
-For example, the following function given a Nothing will crash at runtime and is
-otherwise a valid type-checked program.
+比如，下面的函数当接收Nothing参数时会导致运行时崩溃。除此之外便是一个类型检查良好的合法程序。
 
 ```haskell
 unsafe (Just x) = x + 1
 ```
 
-There are however flags we can pass to the compiler to warn us about such things
-or forbid them entirely either locally or globally.
+编译器支持某些特定的开关，可以针对不完整模式和case子句局部或全局地启用警告，甚至完全禁止。
 
 ```haskell
 $ ghc -c -Wall -Werror A.hs
@@ -654,24 +649,20 @@ A.hs:3:1:
              In an equation for `unsafe': Patterns not matched: Nothing
 ```
 
-The ``-Wall`` or incomplete pattern flag can also be added on a per-module basis
-with the ``OPTIONS_GHC`` pragma.
+使用``OPTIONS_GHC``杂注，可以在模块级别启用``-Wall``和不完整模式相关的开关，
 
 ```haskell
 {-# OPTIONS_GHC -Wall #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
 ```
 
-A more subtle case is when implicitly pattern matching with a single
-"uni-pattern" in a lambda expression. The following will fail when given a
-Nothing.
+一个更难以察觉的例子是在lambda表达式中隐式地使用“单模式”时。下面的代码在接收Nothing参数时会崩掉：
 
 ```haskell
 boom = \(Just a) -> something
 ```
 
-This occurs frequently in let or do-blocks which after desugaring translate into
-a lambda like the above example.
+这种情况常发生在let或do块中，当把块按规则展开后得到上述的lambda表达式时：
 
 ```haskell
 boom = let
@@ -681,20 +672,16 @@ boom = do
   Just a <- something
 ```
 
-GHC can warn about these cases with the ``-fwarn-incomplete-uni-patterns`` flag.
+可以通过``-fwarn-incomplete-uni-patterns``开关让GHC产生警告。
 
-Grossly speaking any non-trivial program will use some measure of partial
-functions, it's simply a fact. This just means there exists obligations for the
-programmer than cannot be manifest in the Haskell type system. Although future
-projects like LiquidHaskell may potentially offer a way to overcome this with
-more sophisticated refinement types, this is an open research problem though.
+粗略地说，任何稍微大型的程序都会用到部分函数，只是多少的问题。没办法事实就是如此。这就意味着在Haskell
+的类型系统无法顾及的一些场合，程序员必须要守好贞操。不过也有一些尚待发展的项目，如LiquidHaskell，可
+能通过更为精细的类型系统解决上述矛盾。尽管如此，上面这个问题还是存在的。
 
-Debugger
+调试器
 --------
 
-Although its use is somewhat rare, GHCi actually does have a builtin debugger.
-Debugging uncaught exceptions from bottoms or asynchronous exceptions is in
-similar style to debugging segfaults with gdb.
+GHCi提供了内置的调试器，虽然比较少用。调试底元素导致的未捕获的异常，或异步异常和用gdb调试段错误差不多。
 
 ```haskell
 λ: :set -fbreak-on-exception
