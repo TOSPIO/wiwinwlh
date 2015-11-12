@@ -366,18 +366,18 @@ GHCi
 
 GHCi is the interactive shell for the GHC compiler. GHCi is where we will spend
 most of our time.
+GHCi是GHC编译器的交互式shell环境。我们多半时间都花在这里。
 
-Command    Shortcut   Action
+命令        快捷键      动作
 ---------  ---------  --------------------------
-`:reload`  `:r`       Code reload
-`:type`    `:t`       Type inspection
-`:kind`    `:k`       Kind inspection
-`:info`    `:i`       Information
-`:print`   `:p`       Print the expression
-`:edit`    `:e`       Load file in system editor.
+`:reload`  `:r`       重新加载代码
+`:type`    `:t`       调查类型
+`:kind`    `:k`       调查kind
+`:info`    `:i`       查看详细信息
+`:print`   `:p`       打印表达式
+`:edit`    `:e`       用系统默认编辑器打开文件
 
-The introspection commands are an essential part of debugging and interacting
-with Haskell code:
+上面那些自省命令对于调试和操作Haskell代码都是至关重要的：
 
 ```haskell
 λ: :type 3
@@ -404,15 +404,14 @@ data [] a = ... | a : [a]       -- Defined in `GHC.Types'
 infixr 5 :
 ```
 
-The current state of the global environment in the shell can also be queried.
-Such as module-level bindings and types:
+也可以获得当前的全局环境状态，如模块级的变量绑定和类型：
 
 ```haskell
 λ: :browse
 λ: :show bindings
 ```
 
-Or module level imports:
+或模块级的导入：
 
 ```haskell
 λ: :show imports
@@ -421,7 +420,7 @@ import Data.Eq
 import Control.Monad
 ```
 
-Or compiler-level flags and pragmas:
+或编译器级别的开关和杂注：
 
 ```haskell
 λ: :set
@@ -443,22 +442,22 @@ with the following modifiers:
   -XExtendedDefaultRules
 ```
 
-Language extensions and compiler pragmas can be set at the prompt. See the [Flag
-Reference](http://www.haskell.org/ghc/docs/latest/html/users_guide/flag-reference.html)
-for the vast set of compiler flag options. For example several common ones are:
+可以在提示符下设置语言扩展和编译器杂注。
+[开关参考](http://www.haskell.org/ghc/docs/latest/html/users_guide/flag-reference.html)
+中包含了大量编译器开关选项说明。下面列举几个常用开关：
 
 ```haskell
-:set -XNoMonomorphismRestriction
-:set -fno-warn-unused-do-bind
+:set -XNoMonomorphismRestriction  # 同态限定(https://wiki.haskell.org/Monomorphism_restriction)
+:set -fno-warn-unused-do-bind  # 屏蔽对未使用的do产生的警告
 ```
 
-Several commands for interactive options have shortcuts:
+下面是几个交互选项的短名：
 
-        Function
+        功能
 ------  ---------
-``+t``  Show types of evaluated expressions
-``+s``  Show timing and memory usage
-``+m``  Enable multi-line expression delimited by ``:{`` and ``:}``.
+``+t``  显示表达式求值后的类型
+``+s``  显示时间和内存使用状况
+``+m``  启用由``:{``和``:}``限定的多行表达式
 
 
 ```haskell
@@ -485,17 +484,16 @@ it :: Prelude.Integer
 "hello ghci"
 ```
 
-The configuration for the GHCi shell can be customized globally by defining a
-``ghci.conf`` in ``$HOME/.ghc/`` or in the current working directory as
-``./.ghci.conf``.
+可以在``$HOME/.ghc/ghci.conf``或当前工作目录中的``./.ghci.conf``文件中对GHCi进行全局配置。
 
-For example we can add a command to use the Hoogle type search from within GHCi.
+举例：在GHCi中添加一条命令在Hoogle中搜索类型。
 
 ```bash
 cabal install hoogle
 ```
 
-We can use it by adding a command to our ``ghci.conf``.
+在``ghci.conf``中添加命令：
+
 
 ~~~~ {.haskell include="src/01-basics/ghci.conf"}
 ~~~~
@@ -506,25 +504,22 @@ Data.Traversable fmapDefault :: Traversable t => (a -> b) -> t a -> t b
 Prelude fmap :: Functor f => (a -> b) -> f a -> f b
 ```
 
-For reasons of sexiness it is desirable to set your GHC prompt to a ``λ`` or a
-``ΠΣ`` if you're into that lifestyle.
+如果你喜欢装逼，可以把你的GHC提示符设成``λ``或``ΠΣ``：
 
 ```haskell
 :set prompt "λ: "
 :set prompt "ΠΣ: "
 ```
 
-Editor Integration
+编辑器集成
 ------------------
 
-Haskell has a variety of editor tools that can be used to provide interactive
-development feedback and functionality such as querying types of subexpressions,
-linting, type checking, and code completion.
+Haskell有大量的编辑器工具，可以提供交互式的提示信息，以及如子表达式类型查询、代码错误检查、
+类型检查、自动补全等功能。
 
 ![](img/errors.png)
 
-Many prepackaged setups exist to expedite the process of setting up many of the
-programmer editors for Haskell development:
+有很多供程序猿专用编辑器使用的开箱即用设置方案，可以迅速完成Haskell开发环境的配置。
 
 **Vim**
 
@@ -534,8 +529,7 @@ https://github.com/begriffs/haskell-vim-now
 
 https://github.com/chrisdone/emacs-haskell-config
 
-The tools that many of these packages use behind the hood are usually available
-on cabal.
+这些包幕后使用的工具通常都可以通过cabal来安装。
 
 ```haskell
 cabal install hdevtools
@@ -545,14 +539,13 @@ cabal install ghcid
 cabal install ghci-ng
 ```
 
-In particular both ``ghc-mod`` and hdevtools can remarkably improve the
-efficiency and productivity.
+尤其是``ghc-mod``和``hdevtools``，可以显著提升开发效率。
 
-See:
+参见：
 
 * [A Vim + Haskell Workflow](http://www.stephendiehl.com/posts/vim_haskell.html)
 
-Bottoms
+Bottom（没人抗议的话叫屁股算了）
 -------
 
 ```haskell
@@ -560,27 +553,24 @@ error :: String -> a
 undefined :: a
 ```
 
-The bottom is a singular value that inhabits every type. When evaluated the
-semantics of Haskell no longer yields a meaningful value. It's usually written as
-the symbol ⊥ (i.e. the compiler flipping you off ).
+bottom是所有类型的唯一共有值。当对它求值时，按照Haskell的语义，不再输出任何有意义的值。
+通常写作“⊥”。（意为编译器把你艹翻了）
 
-An example of an infinite looping term:
+下例为一个死循环表示。
 
 ```haskell
 f :: a
 f = let x = x in x
 ```
 
-The ``undefined`` function is nevertheless extremely practical to accommodate
-writing incomplete programs and for debugging.
+``undefined``函数是方便调试和编写不完整的程序的实用手段：
 
 ```haskell
 f :: a -> Complicated Type
-f = undefined -- write tomorrow, typecheck today!
+f = undefined -- 明天再写，先把类型检查过了
 ```
 
-Partial functions from non-exhaustive pattern matching is probably the most
-common introduction of bottoms.
+通过非完全模式匹配创建的部分函数可能是产生bottom的最常见原因：
 
 ```haskell
 data F = A | B
@@ -588,10 +578,9 @@ case x of
   A -> ()
 ```
 
-The above is translated into the following GHC Core with the exception inserted
-for the non-exhaustive patterns. GHC can be made more vocal about incomplete
-  patterns using the ``-fwarn-incomplete-patterns`` and
-  ``-fwarn-incomplete-uni-patterns`` flags.
+上面的代码将会翻译为下面的GHC Core代码，在模式匹配不到的条件处加入了一条异常。可以通过
+``-fwarn-incomplete-patterns``和``-fwarn-incomplete-uni-patterns``
+让GHC产生更详细的信息。
 
 ```haskell
 case x of _ {
@@ -600,33 +589,29 @@ case x of _ {
 }
 ```
 
-The same holds with record construction with missing fields, although there's
-almost never a good reason to construct a record with missing fields and GHC
-will warn us by default.
+同样的现象也发生于在创建记录数据时缺少域值。创建记录数据时缺少域值几乎肯定是错误的设计，
+此时GHC默认产生警告。
 
 ```haskell
 data Foo = Foo { example1 :: Int }
 f = Foo {}
 ```
 
-Again this has an error term put in place by the compiler:
+和上面一样，编译器会插入一条错误：
 
 ```haskell
 Foo (recConError "<interactive>:4:9-12|a")
 ```
 
-What's not immediately apparent is that they are used extensively throughout the
-Prelude, some for practical reasons others for historical reasons. The canonical
-example is the ``head`` function which as written ``[a] -> a`` could not be
-well-typed without the bottom.
+有一件事可能不是非常明显：这种产生错误的方式在Prelude中大量使用，有一些有务实的理由，
+而有一些则是历史原因。``head``函数是一个典型，其类型是``[a] -> a``。如果没有bottom，
+则不可能实现为这种类型。
 
 ~~~~ {.haskell include="src/01-basics/bottoms.hs"}
 ~~~~
 
-It's rare to see these partial functions thrown around carelessly in production
-code and the preferred method is instead to use the safe variants provided in
-``Data.Maybe`` combined with the usual fold functions ``maybe`` and ``either``
-or to use pattern matching.
+在生产环境中很少能看到这种部分函数被到处胡乱调用。推荐的做法是使用``Data.Maybe``中提供的安全版本
+结合``maybe``和``either``函数，或使用模式匹配来实现。
 
 ```haskell
 listToMaybe :: [a] -> Maybe a
@@ -634,10 +619,8 @@ listToMaybe []     =  Nothing
 listToMaybe (a:_)  =  Just a
 ```
 
-When a bottom defined in terms of error is invoked it typically will not generate
-any position information, but the function used to provide assertions ``assert``
-can be short circuited to generate position information in the place of either
-``undefined`` or ``error`` call.
+当调用一个由错误来定义的bottom值时，通常不会生成出错位置信息，但可以在``undefined``或``error``处
+通过短路逻辑调用``assert``函数， 从而获得位置信息。
 
 ~~~~ {.haskell include="src/01-basics/fail.hs"}
 ~~~~
