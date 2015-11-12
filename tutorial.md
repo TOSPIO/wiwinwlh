@@ -331,11 +331,11 @@ Hackage
 -------
 
 Hackage是事实上的开源Haskell包集结地。作为一种“过渡语言”（译者注：原谅是transitional language。不太确定是啥意思_(:з」∠)_），
-Hackage给人们带来了诸多好处。其中有两个最重要的用途：
+Hackage给人们带来了诸多好处。其中有两个重要思想：
 
 **可复用的代码/构件**
 
-库应该是稳定的、社区支持的构件，其他人可以在此基础上构建更高级的功能。
+这种思想认为：库应该是稳定的、社区支持的构件，其他人可以在此基础上构建更高级的功能。
 库的作者写这个库用以包装他们对某个问题域的理解，以便于其他人以此基础进行开发。
 
 **临时区域/请求他人提供评论**
@@ -344,11 +344,6 @@ Hackage给人们带来了诸多好处。其中有两个最重要的用途：
 但有时候作者把作品放上去，也不说是干什么的，之后解释说要干掉重做，导致很多Hackage中能用的名称被烂尾的代码污染。
 
 
-Many other language ecosystems (Python, NodeJS, Ruby) favor the former
-philosophy, and coming to Haskell can be kind of unnerving to see *thousands of
-libraries without the slightest hint of documentation or description of
-purpose*. It is an open question about the cultural differences between the two
-philosophies and how sustainable the current cultural state of Hackage is.
 很多其他语言的生态环境（如Python、NodeJS、Ruby）倾向于前面一种哲学，但是到Haskell这里，
 看到**成千上万的库完全没有文档和说明**，可能感觉很不爽。关于两种思想的差异和当前Hackage对污染行为的
 容忍度目前还没有明确的答案。
