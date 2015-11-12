@@ -2,32 +2,36 @@
 ![](img/title.png)
 </p>
 
-Stephen Diehl (<a class="author" href="https://twitter.com/smdiehl">@smdiehl</a> )
+原作者：
 
-The source for all code is [available
-here](https://github.com/sdiehl/wiwinwlh/tree/master/src). If there are any
-errors or you think of a more illustrative example feel free to submit a pull
-request on Github.
+* Stephen Diehl (<a class="author" href="https://twitter.com/smdiehl">@smdiehl</a> )
 
-This is the third draft of this document.
+译者：
 
-**License**
+* Savor d'Isavano ([GMail](mail:anohigisavay@gmail.com))
+* Tyler Ling ([Github](https://github.com/cikusa))
 
-This code and text are dedicated to the public domain. You can copy, modify,
-distribute and perform the work, even for commercial purposes, all without
-asking permission.
 
-**Changelog**
+本书中所有源代码均可在[此处](https://github.com/TOSPIO/wiwinwlh/tree/master/src)找到。
+若发现本文中存在任何谬误或你找到任何比文中更为清晰明了的示例，请不吝在Github提交pull request。
+
+本文是该系列的第三版。
+
+**许可声明**
+
+本文中的代码和文本均奉献给“公有领域”。本文可以自由复制、修改、分发，甚至用于商业用途而无须征求作者同意。
+
+**修订历史**
 
 **2.2**
 
-Sections that have had been added or seen large changes:
+新增和大规模修改的章节：
 
-* Irrefutable Patterns
+* 无条件匹配模式
 * Hackage
 * Exhaustiveness
-* Stacktraces
-* Laziness
+* 调用栈
+* 惰性
 * Skolem Capture
 * Foreign Function Pointers
 * Attoparsec Parser
@@ -43,12 +47,12 @@ Sections that have had been added or seen large changes:
 * Monad Morphisms
 * Corecursion
 * Category
-* Arrows
+* 箭头Arrows
 * Bifunctors
 * ExceptT
 * hint / mueval
 * Roles
-* Higher Kinds
+* 高阶Higher Kinds
 * Kind Polymorphism
 * Numeric Tower
 * SAT Solvers
@@ -71,26 +75,25 @@ Sections that have had been added or seen large changes:
 * RTS Profiling
 * Algebraic Relations
 
-Basics
+基础
 ======
 
 Cabal
 -----
 
-Cabal is the build system for Haskell, it also doubles as a package manager.
+Cabal是Haskell的构建系统，兼有包管理器的功能。
 
-For example to install the [parsec](http://hackage.haskell.org/package/parsec)
-package from Hackage to our system invoke the install command:
+例如：从Hackage中安装[parsec](http://hackage.haskell.org/package/parsec)包到本地，执行install命令：
 
 ```bash
-$ cabal install parsec           # latest version
-$ cabal install parsec==3.1.5    # exact version
+$ cabal install parsec           # 最新版
+$ cabal install parsec==3.1.5    # 特定版本
 ```
 
-The usual build invocation for Haskell packages is the following:
+构建Haskell包的一般步骤如下：
 
 ```bash
-$ cabal get parsec    # fetch source
+$ cabal get parsec    # 获取源代码
 $ cd parsec-3.1.5
 
 $ cabal configure
@@ -98,70 +101,57 @@ $ cabal build
 $ cabal install
 ```
 
-To update the package index from Hackage run:
+从Hackage更新本地包索引，执行：
 
 ```bash
 $ cabal update
 ```
 
-To start a new Haskell project run
+创建一个新的Haskell项目，执行：
 
 ```bash
 $ cabal init
 $ cabal configure
 ```
 
-A ``.cabal`` file will be created with the configuration options for our new
-project.
+此时会创建一个包含新项目配置选项的``.cabal``文件。
 
-The latest feature of Cabal is the addition of Sandboxes ( in cabal
-> 1.18 ) which are self contained environments of Haskell packages
-separate from the global package index stored in the ``./.cabal-sandbox`` of our
-project's root. To create a new sandbox for our cabal project run.
+Cabal > 1.18中加入一个“沙盒”（sandbox）功能。沙盒是一个独立的Haskell包环境，与全局环境隔离。
+沙盒保存在项目根目录下的``./.cabal-sandbox``中。要创建沙盒，执行：
 
 ```bash
 $ cabal sandbox init
 ```
 
-In addition the sandbox can be torn down.
+要删除沙盒，执行以下命令：
 
 ```bash
 $ cabal sandbox delete
 ```
 
-Invoking the cabal commands when in the working directory of a project with a
-sandbox configuration set up alters the behavior of cabal itself. For example
-the ``cabal install`` command will only alter the install to the local package
-index and will not touch the global configuration.
+在安装沙盒的项目的工作目录中执行cabal命令与正常执行的效果有所不同，比如``cabal install``只会
+改变本地包索引，不会影响全局配置。
 
-To install the dependencies from the cabal file into the newly created sandbox
-run:
+要在沙盒中安装cabal文件中指定的依赖项，执行如下命令：
 
 ```bash
 $ cabal install --only-dependencies
 ```
 
-Dependencies can also be built in parallel by passing ``-j<n>`` where ``n`` is
-the number of concurrent builds.
+可以使用``-j<n>`` 开关打开并行构建。`n`是并行数。
 
 ```bash
 $ cabal install -j4 --only-dependencies
 ```
 
-Let's look at an example cabal file, there are two main entry points that any
-package may provide: a ``library`` and an ``executable``. Multiple executables
-can be defined, but only one library. In addition there is a special form of
-executable entry point ``Test-Suite`` which defines an interface for unit tests
-to be invoked from cabal.
+来看一个cabal文件的例子。有两种主要的入口点：``library``（库）和``executable``（可执行项）。
+一个cabal文件可以定义多个可执行项，而只能定义一个库。此外还有一个特殊的入口点
+``Test-Suite``，定义了让cabal执行单元测试的接口。
 
-For a library the ``exposed-modules`` field in the cabal file indicates which
-modules within the package structure will be publicly visible when the package
-is installed, these are the user-facing APIs that we wish to expose to
-downstream consumers.
+对于库，使用``exposed-modules``来指定包结构中的哪些模块在包安装之后是公共可见的，
+也就是我们希望让下游用户调用的API。
 
-For an executable the ``main-is`` field indicates the Main module for the
-project that exports the ``main`` function to run for the executable logic of
-the application.
+对于可执行项，使用``main-is``来指定项目的主要模块，这个模块必须导出一个``main``函数作为程序的执行入口。
 
 ```bash
 name:               mylibrary
@@ -203,34 +193,31 @@ Test-Suite test
       mylibrary == 0.1
 ```
 
-To run the "executable" for a library under the cabal sandbox:
+在沙盒中执行包中的可执行项，执行：
 
 ```bash
 $ cabal run
 $ cabal run <name>
 ```
 
-To load the "library" into a GHCi shell under the cabal sandbox:
+在沙盒中加载库到GHCi中，执行：
 
 ```bash
 $ cabal repl
 $ cabal repl <name>
 ```
 
-The ``<name>`` metavariable is either one of the executable or library
-declarations in the cabal file, and can optionally be disambiguated by the
-prefix ``exe:<name>`` or ``lib:<name>`` respectively.
+其中，``<name>``是cabal文件中的可执行项或库的声明。如有重名，可以用``exe:<name>``
+或``lib:<name>``消除歧义。
 
-To build the package locally into the ``./dist/build`` folder execute the
-``build`` command.
+要在本地构建包到``./dist/build``文件夹，执行cabal的build命令：
 
 ```bash
 $ cabal build
 ```
 
-To run the tests, our package must itself be reconfigured with the
-``--enable-tests`` and the ``build-depends`` from the Test-Suite must be
-manually installed if not already.
+要运行测试，必须使用``--enable-tests``重新配置包；在Test-Suite中的``build-depends``指定的包，
+如果没有安装，也必须要手动安装。
 
 ```bash
 $ cabal install --only-dependencies --enable-tests
@@ -239,48 +226,40 @@ $ cabal test
 $ cabal test <name>
 ```
 
-In addition arbitrary shell commands can also be invoked with the GHC
-environmental variables set up for the sandbox. Quite common is to invoke a new
-shell with this command such that the ``ghc`` and ``ghci`` commands use the
-sandbox ( they don't by default, which is a common source of frustration ).
+另外，可以在执行任意shell命令时使用为sandbox设置的环境变量。
+一种常见用法是新开一个shell来让ghc和ghci之类的命令使用沙盒（默认情况下这些命令不会识别沙盒配置）。
 
 ```bash
 $ cabal exec
 $ cabal exec sh # launch a shell with GHC sandbox path set.
 ```
 
-The haddock documentation can be built for the local project by executing the
-``haddock`` command, it will be built to the ``./dist`` folder.
+通过``haddock``命令可以为本地项目构建haddock文档。这些文档会放到``./dist``目录下。
 
 ```bash
 $ cabal haddock
 ```
 
-When we're finally ready to upload to Hackage ( presuming we have a Hackage
-account set up ), then we can build the tarball and upload with the following
-commands:
+如果我们已经注册了Hackage账号，就可以准备上传了。执行下面的命令来构建tarball和上传：
 
 ```bash
 $ cabal sdist
 $ cabal upload dist/mylibrary-0.1.tar.gz
 ```
 
-Sometimes you'd also like to add a library from a local project into a sandbox.
-In this case the add-source command can be used to bring it into the sandbox
-from a local directory.
+有时可能需要从本地项目中添加库到沙盒中。此时可以使用add-source命令：
 
 ```bash
 $ cabal sandbox add-source /path/to/project
 ```
 
-The current state of a sandbox can be frozen with all current package
-constraints enumerated.
+使用freeze命令冻结当前包的各种依赖关系：
 
 ```bash
 $ cabal freeze
 ```
 
-This will create a file ``cabal.config`` with the constraint set.
+此时会创建一个``cabal.config``文件，包含了各种依赖项：
 
 ```haskell
 constraints: mtl ==2.2.1,
@@ -288,11 +267,8 @@ constraints: mtl ==2.2.1,
              transformers ==0.4.1.0
 ```
 
-Using the ``cabal repl`` and ``cabal run`` commands is preferable but sometimes
-we'd like to manually perform their equivalents at the shell, there are several
-useful aliases that rely on shell directory expansion to find the package
-database in the current working directory and launch GHC with the appropriate
-flags:
+虽然一般而言使用``cabal repl``和``cabal run``命令更好，不过有时可能希望手动执行等价的操作。
+下面是几个基于shell目录展开规则的命令别名。使用它们可以找到当前工作目录下的包库，同时使用合适的参数启动GHC：
 
 ```bash
 alias ghc-sandbox="ghc -no-user-package-db -package-db .cabal-sandbox/*-packages.conf.d"
@@ -300,8 +276,7 @@ alias ghci-sandbox="ghci -no-user-package-db -package-db .cabal-sandbox/*-packag
 alias runhaskell-sandbox="runhaskell -no-user-package-db -package-db .cabal-sandbox/*-packages.conf.d"
 ```
 
-There is also a zsh script to show the sandbox status of the current working
-directory in our shell.
+使用下面的zsh脚本可以查看当前工作目录中沙盒是否存在：
 
 ```bash
 function cabal_sandbox_info() {
@@ -318,39 +293,36 @@ function cabal_sandbox_info() {
 RPROMPT="\$(cabal_sandbox_info) $RPROMPT"
 ```
 
-The cabal configuration is stored in ``$HOME/.cabal/config`` and contains
-various options including credential information for Hackage upload. One
-addition to configuration is to completely disallow the installation of packages
-outside of sandboxes to prevent accidental collisions.
+cabal的配置在``$HOME/.cabal/config``处，其中包含了各种配置，包括上传到Hackage所需的授权信息。
+还可以通过配置完全禁止在沙盒之外安装包，从而避免产生冲突：
 
 ```perl
--- Don't allow global install of packages.
+-- 禁止安装全局包
 require-sandbox: True
 ```
 
-A library can also be compiled with runtime profiling information enabled. More
-on this is discussed in the section on Concurrency and profiling.
+通过下面的配置可以在编译library时收集运行时性能信息：
 
 ```perl
 library-profiling: True
 ```
 
-Another common flag to enable is the ``documentation`` which forces the local
-build of Haddock documentation, which can be useful for offline reference. On a
-Linux filesystem these are built to the ``/usr/share/doc/ghc/html/libraries/``
-directory.
+在“并发和性能分析”一节中会作更多介绍。
+
+另一个常用的开关是``documentation``，强制本地构建Haddock文档，供离线查阅。在Linux系统上，
+文档会被构建到``/usr/share/doc/ghc/html/libraries/``中。
+（译者注：这个目录似乎不对。以我的机器为例，是在``/usr/share/doc/ghc-7.10.2/html/libraries/``）
 
 ```perl
 documentation: True
 ```
 
-If GHC is currently installed the documentation for the Prelude and Base
-libraries should be available at this local link:
+如果安装了GHC，则可以通过下面的链接访问Prelude和Base的文档：
 
 [/usr/share/doc/ghc/html/libraries/index.html](file:///usr/share/doc/ghc/html/libraries/index.html)
+（译者注：这个链接也不对，以我的机器为例，是在``/usr/share/doc/ghc-7.10.2/html/libraries/index.html``处）
 
-
-See:
+参见:
 
 * [An Introduction to Cabal Sandboxes](http://coldwa.st/e/blog/2013-08-20-Cabal-sandbox.html)
 * [Storage and Identification of Cabalized Packages](http://www.vex.net/~trebla/haskell/sicp.xhtml)
@@ -358,44 +330,35 @@ See:
 Hackage
 -------
 
-Hackage is the canonical source of open source Haskell packages. Being a
-transitional language, Hackage is many things to many people but there seem to
-be two dominant philosophies:
+Hackage是事实上的开源Haskell包集结地。作为一种“过渡语言”（译者注：原谅是transitional language。不太确定是啥意思_(:з」∠)_），
+Hackage给人们带来了诸多好处。其中有两个最重要的用途：
 
-**Reusable Code / Building Blocks**
+**可复用的代码/构件**
 
-Libraries exist as stable, community supported, building blocks for building
-higher level functionality on top of an edifice which is common and stable. The
-author(s) of the library have written the library as a means of packaging up
-their understanding of a problem domain so that others can build on their
-understanding and expertise.
+库应该是稳定的、社区支持的构件，其他人可以在此基础上构建更高级的功能。
+库的作者写这个库用以包装他们对某个问题域的理解，以便于其他人以此基础进行开发。
 
-**A Staging Area / Request for Comments**
+**临时区域/请求他人提供评论**
 
-A common philosophy is that Hackage is a place to upload experimental libraries
-up as a means of getting community feedback and making the code publicly
-available.  The library author(s) often rationalize putting these kind of
-libraries up undocumented, often not indicating what the library even does, by
-simply stating that they intend to tear it all down and rewrite it later. This
-unfortunately means a lot of Hackage namespace has become polluted with dead-end
-bit-rotting code.
+这种思想认为：Hackage是一个让人们上传实验用的类库的地方，作者通过这种方式开放源代码和得到社区的反馈。
+但有时候作者把作品放上去，也不说是干什么的，之后解释说要干掉重做，导致很多Hackage中能用的名称被烂尾的代码污染。
+
 
 Many other language ecosystems (Python, NodeJS, Ruby) favor the former
 philosophy, and coming to Haskell can be kind of unnerving to see *thousands of
 libraries without the slightest hint of documentation or description of
 purpose*. It is an open question about the cultural differences between the two
 philosophies and how sustainable the current cultural state of Hackage is.
+很多其他语言的生态环境（如Python、NodeJS、Ruby）倾向于前面一种哲学，但是到Haskell这里，
+看到**成千上万的库完全没有文档和说明**，可能感觉很不爽。关于两种思想的差异和当前Hackage对污染行为的
+容忍度目前还没有明确的答案。
 
-Needless to say there is a lot of very low-quality Haskell code and
-documentation out there today, and being conservative in library assessment is a
-necessary skill.
+不消说，目前有很多品质低劣的Haskell代码和文档。如何能够审慎地作出选择，摒弃糟粕，也是一门学问。
 
-As a rule of thumb if the Haddock docs for the library does not have a **minimal
-worked example**, it is usually safe to assume that it is a RFC-style library
-and probably should be avoided.
+可以参考经验法则：如果这个库的Haddock文档里没有**最小可用示例**，通常就可以认定是一个单纯收集意见
+（译者注：原文是RFC-style）的库，尽量别用。
 
-There are several authors who it is usually safe to assume have uploaded a stable
-and usable library. These include, but are not limited to:
+有几位作者做出来的库，通常都可以假定是稳定可用的，包括但不限于：
 
 * Bryan O'Sullivan
 * Johan Tibell
