@@ -12,7 +12,7 @@
 * Tyler Ling ([Github](https://github.com/cikusa))
 
 
-本书中所有源代码均可在[此处](https://github.com/TOSPIO/wiwinwlh/tree/master/src)找到。
+本书中所有源代码均在[此处](https://github.com/TOSPIO/wiwinwlh/tree/master/src)。
 若发现本文中存在任何谬误或你找到任何比文中更为清晰明了的示例，请不吝在Github提交pull request。
 
 本文是该系列的第三版。
