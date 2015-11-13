@@ -3,6 +3,8 @@ IFORMAT = markdown
 FLAGS = --standalone --toc --toc-depth=2 --highlight-style pygments
 TEMPLATE = page.tmpl
 STYLE = css/style.css
+PUB_SRV_HOST = "ratina.org"
+PUB_SRV_USER = "root"
 
 HTML = tutorial.html
 
@@ -31,6 +33,9 @@ includes: includes.hs
 
 preview: all
 	xdg-open $(HTML)
+
+pub: all
+	rsync -avz -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" --progress tutorial.html css img $(PUB_SRV_USER)@$(PUB_SRV_HOST):/var/www/pub/wiwinwlh/
 
 clean:
 	-rm $(CHAPTERS) $(HTML)
