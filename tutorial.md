@@ -1,4 +1,4 @@
-<p class="center logo">
+ <p class="center logo">
 ![](img/title.png)
 </p>
 
@@ -33,7 +33,7 @@ Savor d'Isavano（译者）声明：本翻译在保证尽量充分传达原作�
 
 * 无条件匹配模式
 * Hackage
-* 模式完整性
+* 模式完整度
 * 调用栈
 * 惰性
 * Skolem Capture
@@ -622,12 +622,12 @@ listToMaybe (a:_)  =  Just a
 ```
 
 当调用一个由错误来定义的底元素时，通常不会生成出错位置信息，但可以在``undefined``或``error``处
-通过短路逻辑调用``assert``函数， 从而获得位置信息。
+通过短路逻辑调用``assert``函数，从而获得位置信息。
 
 ~~~~ {.haskell include="src/01-basics/fail.hs"}
 ~~~~
 
-See: [Avoiding Partial Functions](https://wiki.haskell.org/Avoiding_partial_functions)
+参见: [Avoiding Partial Functions](https://wiki.haskell.org/Avoiding_partial_functions)
 
 模式完整度
 --------------
