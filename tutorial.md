@@ -704,8 +704,6 @@ $ ghc -O0 -rtsopts=all -prof -auto-all --make stacktrace.hs
 ./stacktrace +RTS -xc
 ```
 
-And indeed the runtime tells us that the exception occurred in the function
-``g`` and enumerates the call stack.
 这时运行时告诉我们异常发生在函数``g``中，并显示调用栈层次。
 
 ```haskell
@@ -718,10 +716,6 @@ And indeed the runtime tells us that the exception occurred in the function
   called from Main.CAF
 ```
 
-It is best to run this without
-optimizations applied ``-O0`` so as to preserve the original call stack as
-represented in the source.  With optimizations applied this may often entirely
-different since GHC will rearrange the program in rather drastic ways.
 运行的时候最好不要开启优化选项（``-O0``），这样可以保留最原始的调用栈结构。如果开启了优化，
 栈结构可能完全不同，因为GHC会用各种丧心病狂的方式重新组建程序。
 
