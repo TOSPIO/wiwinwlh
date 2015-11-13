@@ -988,45 +988,43 @@ hide             强制从Haddock中屏蔽模块
 prune            屏蔽不带注释的定义
 
 
-Monads
+单子
 ======
 
-Eightfold Path to Monad Satori
+单子修真八要
 ------------------------------
 
-Much ink has been spilled waxing lyrical about the supposed mystique of monads.
-Instead I suggest a path to enlightenment:
+许多人花了大量笔墨渲染单子的神秘之处。 于是我总结了一条通往单子修真的成功之路：
 
-1. Don't read the monad tutorials.
-2. No really, don't read the monad tutorials.
-3. Learn about Haskell types.
-4. Learn what a typeclass is.
-5. Read the [Typeclassopedia](http://wiki.haskell.org/Typeclassopedia).
-6. Read the monad definitions.
-7. Use monads in real code.
-8. Don't write monad-analogy tutorials.
+1. 别去读那些流传的单子系列教程
+2. 再强调一遍，千万别去读那些教程
+3. 研习Haskell中的类型
+4. 学习类型类
+5. 阅读[（类型类百科）Typeclassopedia](http://wiki.haskell.org/Typeclassopedia).
+6. 阅读单子的定义
+7. 在实际代码中使用单子
+8. 别写任何基于类比的单子教程
 
-In other words, the only path to understanding monads is to read the fine
-source, fire up GHC and write some code. Analogies and metaphors will not lead
-to understanding.
+换句话说，要想理解单子，唯一途径是直接读代码，打开GHC，再写一些代码。任何类比和隐喻的手法
+都不会帮助你理解单子。
 
 
-Monadic Myths
+单子之谜
 -------------
 
-The following are all **false**:
+下列陈述全部是**假命题**：
 
-* Monads are impure.
-* Monads are about effects.
-* Monads are about state.
-* Monads are about imperative sequencing.
-* Monads are about IO.
-* Monads are dependent on laziness.
-* Monads are a "back-door" in the language to perform side-effects.
-* Monads are an embedded imperative language inside Haskell.
-* Monads require knowing abstract mathematics.
+* 单子是不纯的。
+* 单子是有关副作用的。
+* 单子是有关状态的。
+* 单子是有关指令序列的。
+* 单子是有关IO的。
+* 单子依赖于惰性。
+* 单子是让Haskell产生副作用的“后门”。
+* 单子是Haskell中嵌入的命令式语言。
+* 使用单子需要理解抽象数学。
 
-See: [What a Monad Is Not](http://wiki.haskell.org/What_a_Monad_is_not)
+参见: [（单子不等于什么？）What a Monad Is Not](http://wiki.haskell.org/What_a_Monad_is_not)
 
 Laws
 ----
