@@ -878,48 +878,46 @@ $ nix-shell --command "cabal repl"
 Haddock
 -------
 
-Haddock is the automatic documentation tool for Haskell source code. It
-integrates with the usual cabal toolchain.
+Haddock是Haskell源代码的文档化工具，它与cabal工具链可以很好地集成。
 
 ```haskell
--- | Documentation for f
+-- | f 的文档
 f :: a -> a
 f = ...
 ```
 
 ```haskell
--- | Multiline documentation for the function
--- f with multiple arguments.
+-- | 带有多个参数的函数 f 的。。。。。。。。
+-- 多行文档
 fmap :: Functor f =>
-     => (a -> b)  -- ^ function
-     -> f a       -- ^ input
-     -> f b       -- ^ output
+     => (a -> b)  -- ^ 函数
+     -> f a       -- ^ 输入
+     -> f b       -- ^ 输出
 ```
 
 ```haskell
 data T a b
-  = A a -- ^ Documentation for A
-  | B b -- ^ Documentation for B
+  = A a -- ^ A 的文档
+  | B b -- ^ B 的文档
 ```
 
-Elements within a module (value, types, classes) can be hyperlinked by enclosing
-the identifier in single quotes.
+对于模块中的元素（值、类型、类型类），可以通过将标识符放入单引号“'”之中来创建超链接。
 
 ```haskell
 data T a b
-  = A a -- ^ Documentation for 'A'
-  | B b -- ^ Documentation for 'B'
+  = A a -- ^ 'A' 的文档
+  | B b -- ^ 'B' 的文档
 ```
 
-Modules themselves can be referenced by enclosing them in double quotes.
+将模块名放入双引号“"”之中，可以创建到模块的超链接。
 
 ```haskell
--- | Here we use the "Data.Text" library and import
--- the 'Data.Text.pack' function.
+-- | 此处使用了 "Data.Text" 库，并导入了
+-- 'Data.Text.pack' 函数。
 ```
 
 ```haskell
--- | An example of a code block.
+-- | 下面创建了一个语句块.
 --
 -- @
 --    f x = f (f x)
@@ -929,14 +927,13 @@ Modules themselves can be referenced by enclosing them in double quotes.
 ```
 
 ```haskell
--- | Example of an interactive shell session.
+-- | 下面是一个交互式shell的例子。
 --
 -- >>> factorial 5
 -- 120
 ```
 
-Headers for specific blocks can be added by prefacing the comment in the module
-block with a star:
+可以通过在模块注释前面加星号“*”来创建标题。
 
 ```haskell
 module Foo (
@@ -946,8 +943,7 @@ module Foo (
 )
 ```
 
-Sections can also be delineated by ``$`` blocks that pertain to references in the
-body of the module:
+可以在段落前加上``$``块来在别处引用它。
 
 ```haskell
 module Foo (
@@ -961,33 +957,35 @@ module Foo (
 -- 'example1' and 'example2'.
 ```
 
-Links can be added with the syntax:
+使用下面的语法来创建链接：
 
 ```haskell
 <url text>
 ```
 
-Images can can also be included, so long as the path is relative to the haddock
-or an absolute reference.
+也可以包含图片，路径必须相对于haddock文档，或者是绝对路径。
+
 
 ```haskell
 <<diagram.png title>>
 ```
 
-Haddock options can also be specified with pragmas in the source, either on
-module or project level.
+也可以在代码中使用杂注来控制Haddock选项，既可以是项目级也可以是模块级。
+
 
 ```haskell
 {-# OPTIONS_HADDOCK show-extensions, ignore-exports #-}
 ```
 
-Option           Description
+选项              描述
 ------           -------------------------------
-ignore-exports   Ignores the export list and includes all signatures in scope.
-not-home         Module will not be considered in the root documentation.
-show-extensions  Annotates the documentation with the language extensions used.
-hide             Forces the module to be hidden from Haddock.
-prune            Omits definitions with no annotations.
+ignore-exports   无视导出列表，包含当前域中的所有签名
+not-home         模块不会被用作元素的首要链接点
+                 （译者注：原文是Module will not be considered in the root documentation. 似乎有误，
+                 参见[此处](https://www.haskell.org/haddock/doc/html/hyperlinking.html)）
+show-extensions  在文档中注明用了哪些语言扩展
+hide             强制从Haddock中屏蔽模块
+prune            屏蔽不带注释的定义
 
 
 Monads
