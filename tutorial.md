@@ -315,7 +315,7 @@ library-profiling: True
 
 另一个常用的开关是``documentation``，强制本地构建Haddock文档，供离线查阅。在Linux系统上，
 文档会被构建到``/usr/share/doc/ghc/html/libraries/``中。
-（译者注：这个目录似乎不对。以我的机器为例，是在``/usr/share/doc/ghc-7.10.2/html/libraries/``）
+（译者注：这个目录取决于发行版。以我的机器为例，是在``/usr/share/doc/ghc-7.10.2/html/libraries/``处）
 
 ```perl
 documentation: True
@@ -324,7 +324,7 @@ documentation: True
 如果安装了GHC，则可以通过下面的链接访问Prelude和Base的文档：
 
 [/usr/share/doc/ghc/html/libraries/index.html](file:///usr/share/doc/ghc/html/libraries/index.html)
-（译者注：这个链接也不对，以我的机器为例，是在``/usr/share/doc/ghc-7.10.2/html/libraries/index.html``处）
+（译者注：同上，取决于发行版，以我的机器为例，是在``/usr/share/doc/ghc-7.10.2/html/libraries/index.html``处）
 
 参见:
 
@@ -345,7 +345,7 @@ Hackage给人们带来了诸多好处。其中流传着两个重要思想：
 **临时区域/请求他人提供评论**
 
 这种思想认为：Hackage是一个让人们上传实验用的类库的地方，作者通过这种方式开放源代码和得到社区的反馈。
-但有时候作者把作品放上去，也不说是干什么的，之后解释说要干掉重做，导致很多Hackage中能用的名称被烂尾的代码污染。
+但有时候作者把作品放上去，也不说是干什么的，之后解释说要干掉重做，导致很多Hackage中很多名称被烂尾的代码污染。
 
 
 很多其他语言的生态环境（如Python、NodeJS、Ruby）倾向于前面一种哲学，但是到Haskell这里，
@@ -449,7 +449,7 @@ with the following modifiers:
 中包含了大量编译器开关选项说明。下面列举几个常用开关：
 
 ```haskell
-:set -XNoMonomorphismRestriction  # 同态限定(https://wiki.haskell.org/Monomorphism_restriction)
+:set -XNoMonomorphismRestriction  # 同态限定(译者注：https://wiki.haskell.org/Monomorphism_restriction)
 :set -fno-warn-unused-do-bind  # 屏蔽对未使用的do产生的警告
 ```
 
@@ -983,7 +983,7 @@ ignore-exports   无视导出列表，包含当前域中的所有签名
 not-home         模块不会被用作元素的首要链接点
                  （译者注：原文是Module will not be considered in the root documentation. 似乎有误，
                  参见[此处](https://www.haskell.org/haddock/doc/html/hyperlinking.html)）
-show-extensions  在文档中注明用了哪些语言扩展
+show-extensions  在文档中注明所使用的语言扩展
 hide             强制从Haddock中屏蔽模块
 prune            屏蔽不带注释的定义
 
