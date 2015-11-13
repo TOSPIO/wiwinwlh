@@ -572,7 +572,7 @@ f :: a -> Complicated Type
 f = undefined -- 明天再写，先把类型检查过了
 ```
 
-通过不完整模式匹配创建的部分函数可能是产生bottom的最常见原因：
+通过不完整模式匹配创建的部分函数可能是产生底元素的最常见原因：
 
 ```haskell
 data F = A | B
@@ -606,7 +606,7 @@ Foo (recConError "<interactive>:4:9-12|a")
 ```
 
 有一件事可能不是非常明显：这种产生错误的方式在Prelude中大量使用，有一些有务实的理由，
-而有一些则是历史原因。``head``函数是一个典型，其类型是``[a] -> a``。如果没有bottom，
+而有一些则是历史原因。``head``函数是一个典型，其类型是``[a] -> a``。如果没有底元素，
 则不可能实现为这种类型。
 
 ~~~~ {.haskell include="src/01-basics/bottoms.hs"}
@@ -621,7 +621,7 @@ listToMaybe []     =  Nothing
 listToMaybe (a:_)  =  Just a
 ```
 
-当调用一个由错误来定义的bottom值时，通常不会生成出错位置信息，但可以在``undefined``或``error``处
+当调用一个由错误来定义的底元素时，通常不会生成出错位置信息，但可以在``undefined``或``error``处
 通过短路逻辑调用``assert``函数， 从而获得位置信息。
 
 ~~~~ {.haskell include="src/01-basics/fail.hs"}
