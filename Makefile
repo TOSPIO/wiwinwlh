@@ -35,7 +35,7 @@ preview: all
 	xdg-open $(HTML)
 
 pub: all
-	rsync -avz -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" --progress tutorial.html css img $(PUB_SRV_USER)@$(PUB_SRV_HOST):/var/www/pub/wiwinwlh/
+	rsync -avz -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" --progress tutorial.html extensions.csv extensions.html css img nav.js $(PUB_SRV_USER)@$(PUB_SRV_HOST):/var/www/pub/wiwinwlh/
 
 clean:
 	-rm $(CHAPTERS) $(HTML)
