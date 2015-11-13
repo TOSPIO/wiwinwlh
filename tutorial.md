@@ -985,7 +985,7 @@ not-home         模块不会被用作元素的首要链接点
                  参见[此处](https://www.haskell.org/haddock/doc/html/hyperlinking.html)）
 show-extensions  在文档中注明所使用的语言扩展
 hide             强制从Haddock中屏蔽模块
-prune            屏蔽不带注释的定义
+prune            屏蔽缺少文档的定义
 
 
 单子
@@ -994,7 +994,7 @@ prune            屏蔽不带注释的定义
 单子修真八要
 ------------------------------
 
-许多人花了大量笔墨渲染单子的神秘之处。 于是我总结了一条通往单子修真的成功之路：
+许多人花了大量笔墨渲染单子的神秘之处。 于是我总结了一条单子修真的成功之路：
 
 1. 别去读那些流传的单子系列教程
 2. 再强调一遍，千万别去读那些教程
@@ -1021,10 +1021,10 @@ prune            屏蔽不带注释的定义
 * 单子是有关IO的。
 * 单子依赖于惰性。
 * 单子是让Haskell产生副作用的“后门”。
-* 单子是Haskell中嵌入的命令式语言。
+* 单子是Haskell中内嵌的命令式语言。
 * 使用单子需要理解抽象数学。
 
-参见: [（单子不等于什么？）What a Monad Is Not](http://wiki.haskell.org/What_a_Monad_is_not)
+参见: [单子不等于什么？（What a Monad Is Not）](http://wiki.haskell.org/What_a_Monad_is_not)
 
 Laws
 ----
