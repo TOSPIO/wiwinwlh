@@ -729,22 +729,19 @@ different since GHC will rearrange the program in rather drastic ways.
 
 * [xc flag](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/runtime-control.html#idp13041968)
 
-Trace
+跟踪调试
 -----
 
-Haskell being pure has the unique property that most code is introspectable on
-its own, as such the "printf" style of debugging is often unnecessary when we
-can simply open GHCi and test the function. Nevertheless Haskell does come with
-an unsafe ``trace`` function which can be used to perform arbitrary print
-statements outside of the IO monad.
+Haskell纯函数的特性使大部分代码可以单独检查，因此一般不太需要"printf"风格的调试手段，只需打开
+GHCi测试一下函数就行了。不过Haskell还是提供了一个不安全的``trace``函数，可以在IO monad之外
+的任何地方打印结果。
 
 ~~~~ {.haskell include="src/01-basics/trace.hs"}
 ~~~~
 
-The function itself is impure ( it uses ``unsafePerformIO`` under the hood ) and shouldn't be used in stable
-code.
+这个函数不是纯函数（内部使用了``unsafePerformIO``），因此不应在稳定代码中使用。
 
-In addition to just the trace function, several common monadic patterns are quite common.
+除了直接使用trace函数，还有几种单子化的模式很常用。
 
 ```haskell
 import Text.Printf
@@ -761,13 +758,11 @@ tracePrintfM s = traceM . printf s
 ```
 
 Typed Holes
+类型化占位符
 -----------
 
-Since GHC 7.8 we have a new tool for debugging incomplete programs by means of
-*typed holes*. By placing an underscore on any value on the right hand-side of a
-declaration GHC will throw an error during type-checker that reflects the
-possible values that could placed at this point in the program to make
-the program type-check.
+从GHC 7.8开始我们可以使用一种新的工具来调试不完整的程序——*类型化占位符*。在声明右侧的任意值处用
+“_”替代，GHC会在类型检查时产生错误，并显示出可以让程序通过类型检查的可能值。
 
 ```haskell
 instance Functor [] where
@@ -793,8 +788,7 @@ src/typedhole.hs:7:32:
 Failed, modules loaded: none.
 ```
 
-GHC has rightly suggested that the expression needed to finish the program is
-``xs :: [a]``.
+由此可见，GHC正确指示出了完成代码所需的表达式是``xs :: [a]``。
 
 Nix
 ---
