@@ -9,7 +9,7 @@
 译者：
 
 * Savor d'Isavano ([GMail](mail:anohigisavay@gmail.com))
-* Tyler Ling ([Github](https://github.com/cikusa))
+* Cindy Xu ([Github](https://github.com/CincyXu))
 
 Savor d'Isavano（译者）声明：本翻译在保证尽量充分传达原作者意图的原则上，对于专业术语，
 尤其是国内没有形成统一翻译的术语，仍尽量根据自己的理解进行翻译；
