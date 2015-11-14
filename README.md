@@ -3,7 +3,8 @@ What I Wish I Knew When Learning Haskell 中文版
 
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/sdiehl/wiwinwlh?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-[Read Here](http://dev.stephendiehl.com/hask/)
+[阅读中文版](http://pub.ratina.org/wiwinwlh/)
+[阅读原版](http://dev.stephendiehl.com/hask/)
 
 若你想修正有关错别字和代码的问题，请不吝提交pull request。
 
