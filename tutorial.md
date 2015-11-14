@@ -21,9 +21,17 @@ Savor d'Isavano（译者）声明：本翻译在力争充分传达原作者意�
 
 本文是该系列的第三版。
 
-**许可声明**
+**原文许可声明**
 
 本文中的代码和文本均奉献给“公有领域”。本文可以自由复制、修改、分发，甚至用于商业用途而无须征求作者同意。
+
+**译文许可声明**
+
+本译文声明为CC BY-NC-ND 2.0许可。
+参见：
+
+* [Creative Commons -- Attribution-NonCommercial-NoDerivs 2.0 Generic -- CC BY-NC-ND 2.0](https://creativecommons.org/licenses/by-nc-nd/2.0/)
+* [Creative Commons -- 署名 - 非商业性使用 - 禁止演绎 2.0 通用 -- CC BY-NC-ND 2.0](https://creativecommons.org/licenses/by-nc-nd/2.0/deed.zh)
 
 **修订历史**
 
@@ -1023,7 +1031,7 @@ prune            屏蔽不带注释的定义
 * 单子是Haskell中内嵌的命令式语言。
 * 使用单子需要理解抽象数学。
 
-参见: [（单子不等于什么？）What a Monad Is Not](http://wiki.haskell.org/What_a_Monad_is_not)
+参见: [（破除单子谎言）What a Monad Is Not](http://wiki.haskell.org/What_a_Monad_is_not)
 
 Laws
 ----
