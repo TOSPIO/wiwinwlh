@@ -30,8 +30,8 @@ Savor d'Isavano（译者）声明：本翻译在力争充分传达原作者意�
 本译文声明为CC BY-NC-ND 2.0许可。
 参见：
 
-* [Creative Commons -- Attribution-NonCommercial-NoDerivs 2.0 Generic -- CC BY-NC-ND 2.0](https://creativecommons.org/licenses/by-nc-nd/2.0/)
-* [Creative Commons -- 署名 - 非商业性使用 - 禁止演绎 2.0 通用 -- CC BY-NC-ND 2.0](https://creativecommons.org/licenses/by-nc-nd/2.0/deed.zh)
+* [Creative Commons -- Attribution-NonCommercial-NoDerivs 4.0 Generic -- CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/)
+* [Creative Commons -- 署名 - 非商业性使用 - 禁止演绎 4.0 通用 -- CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh)
 
 **修订历史**
 
