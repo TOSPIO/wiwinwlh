@@ -995,7 +995,7 @@ hide             强制从Haddock中屏蔽模块
 prune            屏蔽缺少文档的定义
 
 
-单子
+单子（Monad）
 ======
 
 单子修真八要
@@ -1007,7 +1007,7 @@ prune            屏蔽缺少文档的定义
 2. 再强调一遍，千万别去读那些教程
 3. 研习Haskell中的类型
 4. 学习类型类
-5. 阅读[（类型类百科）Typeclassopedia](http://wiki.haskell.org/Typeclassopedia).
+5. 阅读[Typeclassopedia（类型类百科）](http://wiki.haskell.org/Typeclassopedia).
 6. 阅读单子的定义
 7. 在实际代码中使用单子
 8. 别写任何基于类比的单子教程
@@ -1031,57 +1031,54 @@ prune            屏蔽缺少文档的定义
 * 单子是Haskell中内嵌的命令式语言。
 * 使用单子需要理解抽象数学。
 
-参见: [（破除单子谎言）What a Monad Is Not](http://wiki.haskell.org/What_a_Monad_is_not)
+参见: [What a Monad Is Not（破除单子谎言）](http://wiki.haskell.org/What_a_Monad_is_not)
 
-Laws
+单子三大定律
 ----
 
-Monads are not complicated, the implementation is a typeclass with two
-functions, ``(>>=)`` pronounced "bind" and ``return``. Any preconceptions one
-might have for the word "return" should be discarded, it has an entirely
-different meaning.
+单子并不复杂，它仅仅是一个类型类，其中包含两个函数：``(>>=)``（读作“绑定”）和``return``。
+值得一提的是，这里的"return"和你以往所熟悉的概念完全不同。你必须抛弃对它的先入之见才能理解。
+
 
 ```haskell
 class Monad m where
   (>>=)  :: m a -> (a -> m b) -> m b
   return :: a -> m a
 ```
-Together with three laws that all monad instances must satisfy.
 
-**Law 1**
+除此之外，所有单子还必须满足以下三大定律：
+
+**定律1**
 
 ```haskell
 return a >>= f ≡ f a
 ```
 
-**Law 2**
+**定律2**
 
 ```haskell
 m >>= return ≡ m
 ```
 
-**Law 3**
+**定律3**
 
 ```haskell
 (m >>= f) >>= g ≡ m >>= (\x -> f x >>= g)
 ```
 
-There is an auxiliary function (``(>>)``) defined in terms of the bind operation
-that discards its argument.
+还有一个通过``(>>=)``定义的辅助函数``(>>)``，和``(>>=)``基本相同，但舍弃了参数。
 
 ```haskell
 (>>) :: Monad m => m a -> m b -> m b
 m >> k = m >>= \_ -> k
 ```
 
-See: [Monad Laws](http://wiki.haskell.org/Monad_laws)
+参见: [Monad Laws](http://wiki.haskell.org/Monad_laws)
 
-Do Notation
+do标记法
 -----------
 
-Monads syntax in Haskell is written in sugared form that is entirely equivalent
-to just applications of the monad operations. The desugaring is defined
-recursively by the rules:
+在Haskell中，可以使用语法糖写成完全等价于直接应用单子操作的形式。脱糖规则依照如下定义递归进行：
 
 ```haskell
 do { a <- f ; m } ≡ f >>= \a -> do { m }
@@ -1089,7 +1086,7 @@ do { f ; m } ≡ f >> do { m }
 do { m } ≡ m
 ```
 
-So for example the following are equivalent:
+下例三种写法是等价的：
 
 ```haskell
 do
@@ -1111,9 +1108,8 @@ f >>= \a ->
       return (a, b, c)
 ```
 
-If one were to write the bind operator as an uncurried function ( this is
-not how Haskell uses it ) the same desugaring might look something like the
-following chain of nested binds with lambdas.
+若将绑定操作写成非柯里化函数的形式（注意这并不是Haskell中的使用方式），以上的脱糖步骤
+可能会写成下面这种带有lambda表达式的嵌套链式结构。
 
 ```haskell
 bindMonad(f, lambda a:
@@ -1122,9 +1118,9 @@ bindMonad(f, lambda a:
       returnMonad (a,b,c))))
 ```
 
-In the do-notation the monad laws from above are equivalently written:
+在do标记法中，单子定律可以等价地写作：
 
-**Law 1**
+**定律1**
 
 ```haskell
   do x <- m
@@ -1133,7 +1129,7 @@ In the do-notation the monad laws from above are equivalently written:
 = do m
 ```
 
-**Law 2**
+**定律2**
 
 ```haskell
   do y <- return x
@@ -1142,7 +1138,7 @@ In the do-notation the monad laws from above are equivalently written:
 = do f x
 ```
 
-**Law 3**
+**定律3**
 
 ```haskell
   do b <- do a <- m
@@ -1158,7 +1154,7 @@ In the do-notation the monad laws from above are equivalently written:
         g b
 ```
 
-See: [Haskell 2010: Do Expressions](http://www.haskell.org/onlinereport/haskell2010/haskellch3.html#x8-470003.14)
+参见: [Haskell 2010: Do Expressions](http://www.haskell.org/onlinereport/haskell2010/haskellch3.html#x8-470003.14)
 
 Maybe
 -----
