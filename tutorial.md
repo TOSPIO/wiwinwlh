@@ -9,9 +9,9 @@
 译者：
 
 * Savor d'Isavano ([GMail](mail:anohigisavay@gmail.com))
-* Tyler Ling ([Github](https://github.com/cikusa))
+* Cindy Xu ([Github](https://github.com/CincyXu))
 
-Savor d'Isavano（译者）声明：本翻译在保证尽量充分传达原作者意图的原则上，对于专业术语，
+Savor d'Isavano（译者）声明：本翻译在力争充分传达原作者意图的原则上，对于专业术语，
 尤其是国内没有形成统一翻译的术语，仍尽量根据自己的理解进行翻译；
 对于某些专有名词或代码（如Cabal、Hackage、Nix、GHC Core、Maybe、StateT等）以及实难找到合适的中文词藻的词语，则保留原文。
 
@@ -21,9 +21,17 @@ Savor d'Isavano（译者）声明：本翻译在保证尽量充分传达原作�
 
 本文是该系列的第三版。
 
-**许可声明**
+**原文许可声明**
 
 本文中的代码和文本均奉献给“公有领域”。本文可以自由复制、修改、分发，甚至用于商业用途而无须征求作者同意。
+
+**译文许可声明**
+
+本译文声明为CC BY-NC-ND 2.0许可。
+参见：
+
+* [Creative Commons -- Attribution-NonCommercial-NoDerivs 4.0 International -- CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/)
+* [Creative Commons -- 署名 - 非商业性使用 - 禁止演绎 4.0 国际 -- CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh)
 
 **修订历史**
 
@@ -121,7 +129,7 @@ $ cabal configure
 此时会创建一个包含新项目配置选项的``.cabal``文件。
 
 Cabal > 1.18中加入一个“沙盒”（sandbox）功能。沙盒是一个独立的Haskell包环境，与全局环境隔离。
-沙盒保存在项目根目录下的``./.cabal-sandbox``中。要创建沙盒，执行：
+沙盒保存在项目根目录下的``./.cabal-sandbox``中。要创建沙盒，执行以下命令：
 
 ```bash
 $ cabal sandbox init
@@ -136,7 +144,7 @@ $ cabal sandbox delete
 在安装沙盒的项目的工作目录中执行cabal命令与正常执行的效果有所不同，比如``cabal install``只会
 改变本地包索引，不会影响全局配置。
 
-要在沙盒中安装cabal文件中指定的依赖项，执行如下命令：
+要在沙盒中安装cabal文件中指定的依赖项，执行以下命令：
 
 ```bash
 $ cabal install --only-dependencies
@@ -153,7 +161,7 @@ $ cabal install -j4 --only-dependencies
 ``Test-Suite``，定义了让cabal执行单元测试的接口。
 
 对于库，使用``exposed-modules``来指定包结构中的哪些模块在包安装之后是公共可见的，
-也就是我们希望让下游用户调用的API。
+也就是我们希望下游用户调用的API。
 
 对于可执行项，使用``main-is``来指定项目的主要模块，这个模块必须导出一个``main``函数作为程序的执行入口。
 
@@ -197,14 +205,14 @@ Test-Suite test
       mylibrary == 0.1
 ```
 
-在沙盒中执行包中的可执行项，执行：
+在沙盒中运行包中的可执行项，执行如下命令：
 
 ```bash
 $ cabal run
 $ cabal run <name>
 ```
 
-在沙盒中加载库到GHCi中，执行：
+在沙盒中加载库到GHCi中，执行如下命令：
 
 ```bash
 $ cabal repl
@@ -231,7 +239,7 @@ $ cabal test <name>
 ```
 
 另外，可以在执行任意shell命令时使用为sandbox设置的环境变量。
-通常是新开一个shell来让ghc和ghci之类的命令使用沙盒（默认情况下这些命令不会识别沙盒配置）。
+通常是新开一个shell来让ghc和ghci类的命令使用沙盒（默认情况下这些命令不会识别沙盒配置）。
 
 ```bash
 $ cabal exec
@@ -345,7 +353,7 @@ Hackage给人们带来了诸多好处。其中流传着两个重要思想：
 **临时区域/请求他人提供评论**
 
 这种思想认为：Hackage是一个让人们上传实验用的类库的地方，作者通过这种方式开放源代码和得到社区的反馈。
-但有时候作者把作品放上去，也不说是干什么的，之后解释说要干掉重做，导致Hackage中很多名称被烂尾的代码污染。
+但有时候作者把作品放上去，不加任何说明，之后解释说要干掉重做，导致很多Hackage中很多名称被烂尾的代码污染。
 
 
 很多其他语言的生态环境（如Python、NodeJS、Ruby）倾向于前面一种哲学，但是到Haskell这里，
@@ -368,7 +376,7 @@ Hackage给人们带来了诸多好处。其中流传着两个重要思想：
 GHCi
 ----
 
-GHCi是GHC编译器的交互式shell环境。我们多半时间都花在这里。
+GHCi是GHC编译器的交互式shell环境。我们会把大半时间都花在这里。
 
 命令        快捷键      动作
 ---------  ---------  --------------------------
@@ -379,7 +387,7 @@ GHCi是GHC编译器的交互式shell环境。我们多半时间都花在这里�
 `:print`   `:p`       打印表达式
 `:edit`    `:e`       用系统默认编辑器打开文件
 
-上面那些自省命令对于调试和操作Haskell代码都是至关重要的：
+上面有关自省的命令对于调试和操作Haskell代码是至关重要的：
 
 ```haskell
 λ: :type 3
@@ -558,7 +566,7 @@ undefined :: a
 底元素是所有类型的唯一共有值。当对它求值时，按照Haskell的语义，不再输出任何有意义的值。
 通常写作“⊥”。（意为编译器把你艹翻了）
 
-下例为一个死循环表示。
+下例为一个死循环。
 
 ```haskell
 f :: a
@@ -605,7 +613,7 @@ f = Foo {}
 Foo (recConError "<interactive>:4:9-12|a")
 ```
 
-有一件事可能不是非常明显：这种产生错误的方式在Prelude中大量使用，有一些有务实的理由，
+有一点可能不是非常明显：这种产生错误的方式在Prelude中大量使用，有一些有务实的理由，
 而有一些则是历史原因。``head``函数是一个典型，其类型是``[a] -> a``。如果没有底元素，
 则不可能实现为这种类型。
 
@@ -635,10 +643,10 @@ listToMaybe (a:_)  =  Just a
 Haskell允许不完整的模式匹配和case子句。（TODO: or cases which are not exhaustive and instead
 of yielding a value diverge）
 
-由不完整模式或case子句产生的部分函数是存在争议的，大量使用不完整模式是危险讯号，从语言中完全移除这个功能
-却也显得过于严格，导致很多好用的程序都失效了。
+通过不完整模式或case子句编写部分函数是存在争议的，大量使用不完整模式是危险讯号，从语言中完全移除这个功能
+却也显得过于严格，导致很多合法的程序都失效了。
 
-比如，下面的函数当接收Nothing参数时会导致运行时崩溃。除此之外便是一个类型检查良好的合法程序。
+比如，下面的函数当接收Nothing参数时会导致运行时崩溃。然后它是一个类型检查良好的合法程序。
 
 ```haskell
 unsafe (Just x) = x + 1
@@ -679,7 +687,7 @@ boom = do
 可以通过``-fwarn-incomplete-uni-patterns``开关让GHC产生警告。
 
 粗略地说，任何稍微大型的程序都会或多或少地用到部分函数。没办法事实就是如此。这就意味着在Haskell
-的类型系统无法顾及的一些场合，程序员必须要守好贞操。不过也有一些尚待发展的项目，如LiquidHaskell，可
+的类型系统无法顾及的一些场合，程序员必须守好贞操。不过也有一些尚待发展的项目，如LiquidHaskell，可
 能通过更为精细的类型系统解决上述矛盾。尽管如此，这还是个值得探讨的话题。
 
 调试器
@@ -730,7 +738,7 @@ $ ghc -O0 -rtsopts=all -prof -auto-all --make stacktrace.hs
 跟踪调试
 -----
 
-Haskell纯函数的特性使大部分代码可以自我检查，因此一般不太需要"printf"风格的调试手段，只需打开
+Haskell纯函数的特性使大部分代码可以自省，因此一般不太需要"printf"风格的调试手段，只需打开
 GHCi测试一下函数就行了。不过Haskell还是提供了一个不安全的``trace``函数，可以在IO monad之外
 的任何地方打印结果。
 
@@ -739,7 +747,7 @@ GHCi测试一下函数就行了。不过Haskell还是提供了一个不安全的
 
 这个函数不是纯函数（内部使用了``unsafePerformIO``），因此不应在稳定代码中使用。
 
-除了直接使用trace函数，还有几种常用的单子化的模式。
+除了直接使用trace函数，还有几种常用的单子化模式。
 
 ```haskell
 import Text.Printf
@@ -796,10 +804,10 @@ cabal框架集成也花了不少心思。*Nix不是cabal的替代品*，但可�
 Haskell程序中。
 
 是否应该使用Nix也是颇具争议的：使用Nix相当于使用了更重型的系统，还需要用Nix的特殊语言写一系列
-额外的配置文件。Haskell和Nix的发展道路还有很多未知，也不清楚Nix究竟是绕过了cabal现有的一些缺点
+额外的配置文件。Haskell和Nix的发展道路还有很多未知，而且还不清楚Nix究竟是绕过了cabal现有的一些缺点
 还是提供了更深层次的统一模型。
 
-装好NixOS包管理器之后（译者注：其实Nix就是NixOS的包管理器），就可以立刻开一个nix shell，并可以
+装好NixOS包管理器之后（译者注：其实Nix就是NixOS的包管理器），就可以打开nix shell，并
 访问NixOS仓库里装好的各种包。
 
 ```bash
@@ -807,8 +815,7 @@ $ nix-shell -p haskellPackages.parsec -p haskellPackages.mtl --command ghci
 ```
 
 显然上面的命令不仅适用于Haskell包，还适用于很多其他的二进制包和库。如果你的库依赖于某个特定版本的
-包，比如GNU readline，Nix可以处理这种依赖关系，虽然这样的系统库不在``cabal-install``管辖的
-范围之内。
+包，比如GNU readline，Nix可以处理这种依赖关系，而用``cabal-install``显然是处理不了此类关系的。
 
 ```bash
 $ nix-shell -p llvm -p julia -p emacs
@@ -1015,16 +1022,16 @@ prune            屏蔽缺少文档的定义
 下列陈述全部是**假命题**：
 
 * 单子是不纯的。
-* 单子是有关副作用的。
-* 单子是有关状态的。
-* 单子是有关指令序列的。
-* 单子是有关IO的。
+* 单子和副作用有关。
+* 单子和状态有关。
+* 单子和指令序列有关。
+* 单子和IO有关。
 * 单子依赖于惰性。
 * 单子是让Haskell产生副作用的“后门”。
 * 单子是Haskell中内嵌的命令式语言。
 * 使用单子需要理解抽象数学。
 
-参见: [单子不等于什么？（What a Monad Is Not）](http://wiki.haskell.org/What_a_Monad_is_not)
+参见: [（破除单子谎言）What a Monad Is Not](http://wiki.haskell.org/What_a_Monad_is_not)
 
 Laws
 ----
