@@ -1159,9 +1159,7 @@ bindMonad(f, lambda a:
 Maybe
 -----
 
-The *Maybe* monad is the simplest first example of a monad instance. The Maybe
-monad models computations which fail to yield a value at any point during
-computation.
+*Maybe*是最简单的单子实例之一，用于表示失败的计算过程。
 
 ```haskell
 data Maybe a = Just a | Nothing
@@ -1192,7 +1190,7 @@ return 4 :: Maybe Int
 List
 ----
 
-The *List* monad is the second simplest example of a monad instance.
+*List*是另一个最简单的单子实例。
 
 ```haskell
 instance Monad [] where
@@ -1200,14 +1198,14 @@ instance Monad [] where
   return x  =  [x]
 ```
 
-So for example with:
+例如：
 
 ```haskell
 m = [1,2,3,4]
 f = \x -> [1,0]
 ```
 
-The evaluation proceeds as follows:
+求值过程如下：
 
 ```haskell
 m >>= f
@@ -1217,13 +1215,12 @@ m >>= f
 ==> [1,0,1,0,1,0,1,0]
 ```
 
-The list comprehension syntax in Haskell can be implemented in terms of the list
-monad.
+Haskell中的列表推导式可以用单子形式实现：
 
 ```haskell
 a = [f x y | x <- xs, y <- ys, x == y ]
 
--- Identical to `a`
+-- 等同于`a`
 b = do
   x <- xs
   y <- ys
@@ -1237,8 +1234,8 @@ b = do
 IO
 --
 
-A value of type ``IO a`` is a computation which, when performed, does some I/O
-before returning a value of type ``a``. Desugaring the IO monad:
+``IO a``类型值代表了一种计算，当执行时会执行某些I/O操作，最终返回一个``a``类型的值。
+下面是一个IO单子的脱糖过程：
 
 ```haskell
 main :: IO ()
@@ -1259,7 +1256,7 @@ main :: IO ()
 main = putStrLn "What is your name: " >> (getLine >>= (\name -> putStrLn name))
 ```
 
-See: [Haskell 2010: Basic/Input Output](http://www.haskell.org/onlinereport/haskell2010/haskellch7.html)
+参见: [Haskell 2010: Basic/Input Output](http://www.haskell.org/onlinereport/haskell2010/haskellch7.html)
 
 Whats the point?
 ----------------
