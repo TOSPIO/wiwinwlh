@@ -5,6 +5,7 @@ TEMPLATE = page.tmpl
 STYLE = css/style.css
 PUB_SRV_HOST = "ratina.org"
 PUB_SRV_USER = "root"
+PUB_SRV_PATH = "/var/www/pub/wiwinwlh"
 
 HTML = tutorial.html
 
@@ -35,7 +36,7 @@ preview: all
 	xdg-open $(HTML)
 
 pub: all
-	rsync -avz -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" --progress tutorial.html extensions.csv extensions.html css img nav.js $(PUB_SRV_USER)@$(PUB_SRV_HOST):/var/www/pub/wiwinwlh/
+	rsync -avz -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" --progress tutorial.html extensions.csv extensions.html css img nav.js $(PUB_SRV_USER)@$(PUB_SRV_HOST):$(PUB_SRV_PATH)
 
 clean:
 	-rm $(CHAPTERS) $(HTML)
