@@ -1258,17 +1258,13 @@ main = putStrLn "What is your name: " >> (getLine >>= (\name -> putStrLn name))
 
 参见: [Haskell 2010: Basic/Input Output](http://www.haskell.org/onlinereport/haskell2010/haskellch7.html)
 
-Whats the point?
+到底想表达什么？
 ----------------
 
-Consider the non-intuitive fact that we now have a uniform interface for talking
-about three very different but foundational ideas for programming: *Failure*,
-*Collections*, and *Effects*.
+不知你有没有发现，我们已经为三个开发过程中截然不同的核心概念——*失败*、*集合*、*副作用*找到了一个统一接口。
 
-Let's write down a new function called ``sequence`` which folds a function
-``mcons``, which we can think of as analogues to the list constructor (i.e. ``(a
-: b : [])``) except it pulls the two list elements out of two monadic values
-(``p``,``q``) using bind.
+我们来写一个新的函数``sequence``，它包装了函数``mcons``，``mcons``类似列表构造函数
+（亦即``(a : b : [])``），区别在于它是通过绑定方法从两个单子值中取出构造函数的参数：
 
 ```haskell
 sequence :: Monad m => [m a] -> m [a]
@@ -1281,13 +1277,11 @@ mcons p q = do
   return (x:y)
 ```
 
-What does this function mean in terms of each of the monads discussed above?
+这个函数对于我们上面讨论的单子类型分别有什么作用？
 
 **Maybe**
 
-Sequencing a list of a ``Maybe`` values allows us to collect the results of a
-series of computations which can possibly fail and yield the aggregated values
-only if they all succeeded.
+对于一个``Maybe``值的列表执行``sequence``操作，可以收集到计算序列的结果，前提是所有的计算必须全部成功。
 
 ```haskell
 sequence :: [Maybe a] -> Maybe [a]
@@ -1302,9 +1296,7 @@ sequence [Just 3, Just 4, Nothing]
 
 **List**
 
-Since the bind operation for the list monad forms the pairwise list of elements
-from the two operands, folding the bind over a list of lists with ``sequence``
-implements the general Cartesian product for an arbitrary number of lists.
+对于列表单子执行绑定操作，会从两个列表操作数中生成两两成对的结果，因此，通过``sequence``对包含n个列表的列表执行折叠（fold）操作相当于n个列表的笛卡尔积。
 
 ```haskell
 sequence :: [[a]] -> [[a]]
@@ -1317,8 +1309,7 @@ sequence [[1,2,3],[10,20,30]]
 
 **IO**
 
-Sequence takes a list of IO actions, performs them sequentially, and returns the
-list of resulting values in the order sequenced.
+对IO操作执行``sequence``，会依次执行这些操作，并依序返回每个操作的结果列表。
 
 ```haskell
 sequence :: [IO a] -> IO [a]
@@ -1331,14 +1322,11 @@ sequence [getLine, getLine]
 -- ["a","b"]
 ```
 
-So there we have it, three fundamental concepts of computation that are normally
-defined independently of each other actually all share this similar structure
-that can be abstracted out and reused to build higher abstractions that work for
-all current and future implementations. If you want a motivating reason for
-understanding monads, this is it! This is the essence of what I wish I knew
-about monads looking back.
+我们可以得出结论，虽然这三种编程中的基本概念一般是分别定义的，实际上可以通过这种相似的结构抽象出来并复用，
+以构建更高层次的抽象系统，对于所有的现有和以后可能的实现都很好用。如果你想找一个必须理解单子的理由，这便是你要找的理由。
+现在回过头来看，这不就是我当时百思不得解的单子的精髓嘛！
 
-See: [Control.Monad](http://hackage.haskell.org/package/base-4.6.0.1/docs/Control-Monad.html#g:4)
+参见: [Control.Monad](http://hackage.haskell.org/package/base-4.6.0.1/docs/Control-Monad.html#g:4)
 
 Reader Monad
 ------------
