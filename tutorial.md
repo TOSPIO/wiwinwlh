@@ -1328,10 +1328,10 @@ sequence [getLine, getLine]
 
 参见: [Control.Monad](http://hackage.haskell.org/package/base-4.6.0.1/docs/Control-Monad.html#g:4)
 
-Reader Monad
+Reader单子
 ------------
 
-The reader monad lets us access shared immutable state within a monadic context.
+Reader单子允许我们在单子上下文中访问共享的不变状态。
 
 ```haskell
 ask :: Reader r r
@@ -1343,15 +1343,15 @@ runReader :: Reader r a -> r -> a
 ~~~~ {.haskell include="src/02-monads/reader.hs"}
 ~~~~
 
-A simple implementation of the Reader monad:
+Reader单子的一个简单实现：
 
 ~~~~ {.haskell include="src/02-monads/reader_impl.hs"}
 ~~~~
 
-Writer Monad
+Writer单子
 ------------
 
-The writer monad lets us emit a lazy stream of values from within a monadic context.
+Writer单子允许我们在单子上下文中写入惰性值流。
 
 ```haskell
 tell :: w -> Writer w ()
@@ -1362,17 +1362,14 @@ runWriter :: Writer w a -> (a, w)
 ~~~~ {.haskell include="src/02-monads/writer.hs"}
 ~~~~
 
-A simple implementation of the Writer monad:
+Writer单子的一个简单实现：
 
 ~~~~ {.haskell include="src/02-monads/writer_impl.hs"}
 ~~~~
 
-This implementation is lazy so some care must be taken that one actually wants
-to only generate a stream of thunks.  Often times it is desirable to produce a
-computation which requires a stream of thunks that can be pulled out of the
-``runWriter`` lazily, but often times the requirement is to produce a finite stream
-of values that are forced at the invocation of ``runWriter``. Undesired laziness
-from Writer is a common source of grief, but is very remediable.
+
+这个实现是惰性的，因此你必须清楚是否真的希望得到生成次程式（thunk）流：很多情况下你的计算确实需要从``runWriter``中读取次程式流，
+但也有很多情况要求调用``runWriter``时通过直接求值来获取有限的值流。如果你不是有意要利用Writer的惰性，就会非常悲催，不过改起来也并不困难。
 
 State Monad
 -----------
