@@ -6861,8 +6861,6 @@ Parsec
 ------
 
 用解析器组合子来解析Haskell是非常普遍的，解析器组合子（*Parser Combinators*）可以通过写代码生成解析器，这些解析器与解析语法本身非常相似！  
-
-              Combinators
 -----------   ------------
 ``<|>``       操作符会在第一个实参解析完后再进行第二个实参解析，这可以串成一个选择序列。
 ``many``      需要任意数量的模式去匹配给定模式，然后返回一个匹配模式的列表。
@@ -6906,7 +6904,7 @@ parseA = Add <$> identifier <* char '+' <*> identifier
 ~~~~ {.haskell include="src/24-parsing/simple_parser.hs"}
 ~~~~
 
-Custom Lexer 自定义词法分析器
+自定义词法分析器(Custom Lexer)
 ------------
 
 在前面的例子中，词法分析路径并不是必需的，因为每个词位会匹配到字符流中的一个连续的字符集合。如果我们想用一组有意义的符号集来扩展解析器，可以使用Parsec提供的一套函数来定义词法解析器，并用解析器组合子来整合这些词法解析器。最简单的例子是构建在内置Parsec语言上的定义，这些定义定义了一套最常见的词法组合。
@@ -6925,16 +6923,15 @@ javaStyle    :: LanguageDef st
 
 See: [Text.ParserCombinators.Parsec.Language](http://hackage.haskell.org/package/parsec-3.1.5/docs/Text-ParserCombinators-Parsec-Language.html)
 
-Simple Parsing
+简单解析
 --------------
 
-Putting our lexer and parser together we can write down a more robust parser for our little lambda calculus
-syntax.
+把词法解析器和分析器放在一起，可以让我们写出解析匿名函数微积分句法时鲁棒性更强的分析器。
 
 ~~~~ {.haskell include="src/24-parsing/parser.hs"}
 ~~~~
 
-Trying it out:
+试试看下面的例子：
 
 ```bash
 λ: runhaskell simpleparser.hs
@@ -6948,11 +6945,9 @@ Lam "i" (Lam "x" (Var "x"))
 Lam "s" (Lam "f" (Lam "g" (Lam "x" (App (App (Var "f") (Var "x")) (App (Var "g") (Var "x"))))))
 ```
 
-Stateful Parsing 简单解析
+状态解析
 ----------------
-
-For a more complex use, consider parser that are internally stateful, for example adding operators that can
-defined at parse-time and are dynamically added to the ``expressionParser`` table upon definition.
+解析器的一个更复杂的应用是，使用有内部状态的解析器，例如增加在解析的同时定义的操作符，动态添加到 ``expressionParser`` 表上。 upon definition.
 
 ~~~~ {.haskell include="src/24-parsing/parsec_operators.hs"}
 ~~~~
@@ -6972,7 +6967,7 @@ let z = y in a $ a $ (-a)!;
 let z = y in a # a # a $ b; let z = y in a # a # a # b;
 ```
 
-Generic Parsing
+一般解析
 ---------------
 
 Previously we defined generic operations for pretty printing and this begs the
@@ -6993,7 +6988,7 @@ Bach
 Feynman
 ```
 
-Attoparsec
+阿托parsec
 ----------
 
 Attoparsec is a parser combinator like Parsec but more suited for bulk parsing of large text and binary files
