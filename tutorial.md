@@ -6860,18 +6860,17 @@ Parsing
 Parsec
 ------
 
-For parsing in Haskell it is quite common to use a family of libraries known as *Parser Combinators* which let
-us write code to generate parsers which themselves looks very similar to the parser grammar itself!
+用解析器组合子来解析Haskell是非常普遍的，解析器组合子（*Parser Combinators*）可以通过写代码生成解析器，这些解析器与解析语法本身非常相似！  
 
               Combinators
 -----------   ------------
-``<|>``       The choice operator tries to parse the first argument before proceeding to the second. Can be chained sequentially to a generate a sequence of options.
-``many``      Consumes an arbitrary number of patterns matching the given pattern and returns them as a list.
-``many1``     Like many but requires at least one match.
-``optional``  Optionally parses a given pattern returning its value as a Maybe.
-``try``       Backtracking operator will let us parse ambiguous matching expressions and restart with a different pattern.
+``<|>``       操作符会在第一个实参解析完后再进行第二个实参解析，这可以串成一个选择序列。
+``many``      需要任意数量的模式去匹配给定模式，然后返回一个匹配模式的列表。
+``many1``     跟many一样，但是many1要求至少有一个模式是匹配的。
+``optional``  会有选择地解析一个给定模式并返回这个模式的值作为一种可能性。
+``try``       回溯操作符可以让我们解析模糊匹配表达式，并重启一个不同的模式。
 
-There are two styles of writing Parsec, one can choose to write with monads or with applicatives.
+Parsec有两种风格，你可以选择用monads或applicatives写。
 
 ```haskell
 parseM :: Parser Expr
@@ -6882,7 +6881,7 @@ parseM = do
   return $ Add a b
 ```
 
-The same code written with applicatives uses the applicative combinators:
+上面代码用应用组合子重写，如下：
 
 ```haskell
 -- | Sequential application.
@@ -6902,20 +6901,15 @@ parseA :: Parser Expr
 parseA = Add <$> identifier <* char '+' <*> identifier
 ```
 
-Now for instance if we want to parse simple lambda expressions we can encode the parser logic as compositions
-of these combinators which yield the string parser when evaluated under with the ``parse``.
+比如，如果我们想解析简单的匿名表达式，我们可以编码解析器逻辑作为这些组合子的组成成分，when evaluated under with the``parse``，这些组合子会生成线性解析器。
 
 ~~~~ {.haskell include="src/24-parsing/simple_parser.hs"}
 ~~~~
 
-Custom Lexer
+Custom Lexer 自定义词法分析器
 ------------
 
-In our previous example lexing pass was not necessary because each lexeme mapped to a sequential collection
-of characters in the stream type. If we wanted to extend this parser with a non-trivial set of tokens, then
-Parsec provides us with a set of functions for defining lexers and integrating these with the parser
-combinators. The simplest example builds on top of the builtin Parsec language definitions which define a set
-of most common lexical schemes.
+在前面的例子中，词法分析路径并不是必需的，因为每个词位会匹配到字符流中的一个连续的字符集合。如果我们想用一组有意义的符号集来扩展解析器，可以使用Parsec提供的一套函数来定义词法解析器，并用解析器组合子来整合这些词法解析器。最简单的例子是构建在内置Parsec语言上的定义，这些定义定义了一套最常见的词法组合。
 
 ```haskell
 haskellDef   :: LanguageDef st
@@ -6924,7 +6918,7 @@ haskellStyle :: LanguageDef st
 javaStyle    :: LanguageDef st
 ```
 
-For instance we'll build on top of the empty language grammar.
+如下构建在空语言语法上的例子：
 
 ~~~~ {.haskell include="src/24-parsing/lexer.hs"}
 ~~~~
@@ -6954,7 +6948,7 @@ Lam "i" (Lam "x" (Var "x"))
 Lam "s" (Lam "f" (Lam "g" (Lam "x" (App (App (Var "f") (Var "x")) (App (Var "g") (Var "x"))))))
 ```
 
-Stateful Parsing
+Stateful Parsing 简单解析
 ----------------
 
 For a more complex use, consider parser that are internally stateful, for example adding operators that can
