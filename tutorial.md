@@ -6952,7 +6952,7 @@ Lam "s" (Lam "f" (Lam "g" (Lam "x" (App (App (Var "f") (Var "x")) (App (Var "g")
 ~~~~ {.haskell include="src/24-parsing/parsec_operators.hs"}
 ~~~~
 
-For example input try:
+试试如下代码：
 
 ```haskell
 infixl 3 ($);
@@ -6970,12 +6970,7 @@ let z = y in a # a # a $ b; let z = y in a # a # a # b;
 一般解析
 ---------------
 
-Previously we defined generic operations for pretty printing and this begs the
-question of whether we can write a parser on top of Generics. The answer is
-generally yes, so long as there is a direct mapping between the specific lexemes
-and sum and products types. Consider the simplest case where we just read off
-the names of the constructors using the regular Generics machinery and then
-build a Parsec parser terms of them.
+之前我们为整齐打印定义了一般操作，这一操作回避了是否能在泛型上写一个解析器这个问题，问题的答案通常是能，只要在特定词位和产品类型之间有直接的匹配。考虑最简单的一种情况，我们仅仅用泛型机器读取构造函数的名字，然后构建他们的Parsec解析器关系。
 
 ~~~~ {.haskell include="src/24-parsing/generics.hs"}
 ~~~~
@@ -6988,31 +6983,24 @@ Bach
 Feynman
 ```
 
-阿托parsec
+Attoparsec
 ----------
 
-Attoparsec is a parser combinator like Parsec but more suited for bulk parsing of large text and binary files
-instead of parsing language syntax to ASTs. When written properly Attoparsec parsers can be [extremely
-efficient](http://www.serpentine.com/blog/2014/05/31/attoparsec/).
+Attoparsec 是一种像 Parsec 一样的解析器组合子， 但是Attoparsec比Parsec更适合大文本和二进制文件的批量解析，而不是把语言语法解析到ASTs。如果写的合适，Attoparsec会[极其有效]。 (http://www.serpentine.com/blog/2014/05/31/attoparsec/).
 
-One notable distinction between Parsec and Attoparsec is that backtracking
-operator (``try``) is not present and reflects on attoparsec's different
-underlying parser model.
+Parsec 和 Attoparsec 一个值得注意的区别是，回溯操作符(``try``)在Attoparsec中并不存在（not present），它是映射到Attoparsec的不同潜在解析模型上的。
 
-For a simple little lambda calculus language we can use attoparsec much in the
-same we used parsec:
+对于一个小的匿名微积分函数语言，我们用 Attoparsec 和用 Parsec 是一样的：
 
 ~~~~ {.haskell include="src/24-parsing/attoparsec_lang.hs"}
 ~~~~
 
-For an example try the above parser with the following simple lambda expression.
+比如，用下面的简单匿名函数表达式试试上面的解析：
 
 ~~~~ {.ocaml include="src/24-parsing/simple.ml"}
 ~~~~
 
-Attoparsec adapts very well to binary and network protocol style parsing as
-well, this is extracted from a small implementation of a distributed consensus
-network protocol:
+Attoparsec 也能非常好地适应二进制和网络协议风格解析，这个结论得自于分布式网络协议统一性的实现:
 
 ~~~~ {.haskell include="src/24-parsing/attoparsec.hs"}
 ~~~~
