@@ -6947,7 +6947,7 @@ Lam "s" (Lam "f" (Lam "g" (Lam "x" (App (App (Var "f") (Var "x")) (App (Var "g")
 
 状态解析
 ----------------
-解析器的一个更复杂的应用是，使用有内部状态的解析器，例如增加在解析的同时定义的操作符，动态添加到 ``expressionParser`` 表上。 upon definition.
+解析器的一个更复杂的应用是，使用有内部状态的解析器，例如增加在解析的同时定义的操作符，动态添加到 ``expressionParser`` 表上。 （upon definition.）
 
 ~~~~ {.haskell include="src/24-parsing/parsec_operators.hs"}
 ~~~~
