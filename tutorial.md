@@ -6234,24 +6234,28 @@ Data Structures
 ===============
 
 Map
+映射
 ---
 
 ~~~~ {.haskell include="src/20-data-structures/map.hs"}
 ~~~~
 
 Tree
+树
 ----
 
 ~~~~ {.haskell include="src/20-data-structures/tree.hs"}
 ~~~~
 
 Set
+集合
 ---
 
 ~~~~ {.haskell include="src/20-data-structures/set.hs"}
 ~~~~
 
 Vector
+向量
 ------
 
 Vectors are high performance single dimensional arrays that come come in six variants, two for each of the
@@ -6281,6 +6285,7 @@ iterateN :: Int -> (a -> a) -> a -> Vector a
 See: [Numerical Haskell: A Vector Tutorial](http://wiki.haskell.org/Numeric_Haskell:_A_Vector_Tutorial)
 
 Mutable Vectors
+可变向量
 ---------------
 
 ```haskell
@@ -6297,6 +6302,7 @@ created to/from the ``MVector`` using the freeze/thaw functions.
 ~~~~
 
 Unordered-Containers
+无序容器
 --------------------
 
 ```haskell
@@ -6316,6 +6322,7 @@ a ``Hashable`` instance.
 See: [Johan Tibell: Announcing Unordered Containers](http://blog.johantibell.com/2012/03/announcing-unordered-containers-02.html)
 
 Hashtables
+散列表
 ----------
 
 Hashtables provides hashtables with efficient lookup within the ST or IO monad.
@@ -6330,6 +6337,7 @@ lookup :: (Eq k, Hashable k) => HashTable s k v -> k -> ST s (Maybe v)
 ```
 
 Graphs
+图
 ------
 
 The Graph module in the containers library is a somewhat antiquated API for
@@ -6393,6 +6401,7 @@ sc2 = scc' (fromList ex2)
 See: [GraphSCC](http://hackage.haskell.org/package/GraphSCC)
 
 Graph Theory
+图论
 ------------
 
 The ``fgl`` library provides a more efficient graph structure and a wide
@@ -6442,6 +6451,7 @@ Writer monad.
 ~~~~
 
 Sequence
+序列
 --------
 
 The sequence data structure behaves structurally similar to list but is
@@ -6451,6 +6461,7 @@ optimized for append/prepend operations and traversal.
 ~~~~
 
 Matrices and HBlas
+矩阵和
 ------------------
 
 Just as in C when working with n-dimensional matrices we'll typically overlay
@@ -6926,7 +6937,7 @@ See: [Text.ParserCombinators.Parsec.Language](http://hackage.haskell.org/package
 简单解析
 --------------
 
-把词法解析器和分析器放在一起，可以让我们写出解析匿名函数微积分句法时鲁棒性更强的分析器。
+把词法解析器和分析器放在一起，可以让我们写出解析lambda演算句法时鲁棒性更强的分析器。
 
 ~~~~ {.haskell include="src/24-parsing/parser.hs"}
 ~~~~
