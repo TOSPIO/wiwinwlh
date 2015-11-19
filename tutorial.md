@@ -1371,10 +1371,10 @@ Writer单子的一个简单实现：
 这个实现是惰性的，因此你必须清楚是否真的希望得到生成次程式（thunk）流：很多情况下你的计算确实需要从``runWriter``中读取次程式流，
 但也有很多情况要求调用``runWriter``时通过直接求值来获取有限的值流。如果你不是有意要利用Writer的惰性，就会非常悲催，不过改起来也并不困难。
 
-State Monad
+State单子
 -----------
 
-The state monad allows functions within a stateful monadic context to access and modify shared state.
+State单子允许在状态单子上下文中访问和修改共享状态。
 
 ```haskell
 runState  :: State s a -> s -> (a, s)
@@ -1385,29 +1385,32 @@ execState :: State s a -> s -> s
 ~~~~ {.haskell include="src/02-monads/state.hs"}
 ~~~~
 
-The state monad is often mistakenly described as being impure, but it is in fact
-entirely pure and the same effect could be achieved by explicitly passing state.
-A simple implementation of the State monad is only a few lines:
+关于State单子常常有一种误解，认为它是不纯的，其实它完完全全是纯的。即使你不用，通过显式地传递状态，一样可以得出相同的结果。
+下面是State单子的一个简单实现，仅需几行代码：
 
 ~~~~ {.haskell include="src/02-monads/state_impl.hs"}
 ~~~~
 
-Monad Tutorials
+单子教程相关
 ---------------
 
 So many monad tutorials have been written that it begs the question, what makes
 monads so difficult when first learning Haskell. I suggest there are three
 aspects to why this is so:
+为什么单子对于Haskell初学者如此难以掌握？我们看过太多太多有关单子的教程完全回避了这个问题。
+我认为有以下三个原因：
 
-1. *There are several levels on indirection with desugaring.*
+1. *关于do标记法的脱糖方法往往一笔带过甚至避而不谈*
 
-A lot of Haskell that we write is radically rearranged and transformed into
-an entirely new form under the hood.
+我们写的很多Haskell代码在底层会经历复杂的重组过程，并转换为完全不同的形式。
 
 Most monad tutorials will not manually expand out the do-sugar. This leaves the
 beginner thinking that monads are a way of dropping into a pseudo-imperative
 language inside of code and further fuels that misconception that specific
 instances like IO are monads in their full generality.
+大多有关单子的教程不会手工操作一遍do标记法的展开过程，于是给初学者留下了这样的印象，认为单子是在代码中临时陷入伪命令式代码的方式，
+甚至造成更深的误解，认为诸如IO的单子实例就是单子的全部意义。
+
 
 ```haskell
 main = do
@@ -1416,7 +1419,7 @@ main = do
   return ()
 ```
 
-Being able to manually desugar is crucial to understanding.
+必须知道如何手工脱糖，才能领会单子的奥妙。
 
 ```haskell
 main =
@@ -1425,19 +1428,18 @@ main =
       return ()
 ```
 
-2. *Asymmetric binary infix operators for higher order functions are not common
-   in other languages.*
+2. *其他语言中很少对高阶函数使用不对称的二元中缀运算符*
 
 ```haskell
 (>>=) :: Monad m => m a -> (a -> m b) -> m b
 ```
 
-On the left hand side of the operator we have an ``m a`` and on the right we
-have ``a -> m b``. Although some languages do have infix operators that are
-themselves higher order functions, it is still a rather rare occurrence.
+运算符左边是一个``m a``类型的数据，而右边是``a -> m b``类型的函数。虽然某些语言中也有
+用作高阶函数的中缀运算符，但仍然比较少见。
 
 So with a function desugared, it can be confusing that ``(>>=)`` operator is in
 fact building up a much larger function by composing functions together.
+因此，``(>>=)``运算符实际是把脱糖后的函数组合成更复杂的函数，这一点比较容易让人疑惑。
 
 ```haskell
 main =
@@ -1446,7 +1448,7 @@ main =
       return ()
 ```
 
-Written in prefix form, it becomes a little bit more digestible.
+写成前缀形式会比较容易理解：
 
 ```haskell
 main =
@@ -1457,8 +1459,7 @@ main =
   )
 ```
 
-Perhaps even removing the operator entirely might be more intuitive coming from
-other languages.
+可能对于从其他语言过渡来的童鞋们来说，把运算符直接拿掉看起来更清楚一些。
 
 ```haskell
 main = bind getLine (\x -> bind putStrLn (\_ -> return ()))
@@ -1466,20 +1467,17 @@ main = bind getLine (\x -> bind putStrLn (\_ -> return ()))
     bind x y = x >>= y
 ```
 
-3. *Ad-hoc polymorphism is not commonplace in other languages.*
+3. *特殊的类型类字典参数的多态在其他语言中也很少见*
 
-Haskell's implementation of overloading can be unintuitive if one is not familiar
-with type inference. It is abstracted away from the user but the ``(>>=)`` or
-``bind`` function is really a function of 3 arguments with the extra typeclass
-dictionary argument (``$dMonad``) implicitly threaded around.
+Haskell中的重载实现对于对类型推断不太熟悉的人来说可能并不直观。实际上``(>>=)``或``bind``函数有三个参数，
+有一个额外的参数是类型类的字典（``$dMonad``），只不过它是隐式传递的，从用户层面来说已经被抽象掉了。
 
 ```haskell
 main $dMonad = bind $dMonad getLine (\x -> bind $dMonad putStrLn (\_ -> return $dMonad ()))
 ```
 
-Except in the case where the parameter of the monad class is unified ( through
-inference ) with a concrete class instance, in which case the instance
-dictionary (``$dMonadIO``) is instead spliced throughout.
+只不过在这个例子中，单子类型类参数是同一个实例（通过类型推断得知）（译者注：都是IO）。
+因此，类型类实例的字典（``$dMonadIO``）自始至终都是同一个。
 
 ```haskell
 main :: IO ()
@@ -1493,8 +1491,12 @@ required! ), but that novices often come to monads with an incomplete
 understanding of points (1), (2), and (3) and then trip on the simple fact that
 monads are the first example of a Haskell construct that is the confluence of
 all three.
+一般不会对转换过程作出讨论，而一旦我们真正领会了转换过程内在的逻辑，就可以信手拈来。
+我觉得单子教程普遍存在的根本错误并不是对单子的直观感受难以表述清晰（不要用类比或隐喻的手法！），而是
+初学者们学习单子时没有对上面的(1)、(2)、(3)点有足够深刻的认识（TODO: and then trip on the simple fact that
+monads are the first example of a Haskell construct that is the confluence of all three.）
 
-See: [Monad Tutorial Fallacy](http://byorgey.wordpress.com/2009/01/12/abstraction-intuition-and-the-monad-tutorial-fallacy/)
+参见: [单子教程的普遍谬误](http://byorgey.wordpress.com/2009/01/12/abstraction-intuition-and-the-monad-tutorial-fallacy/)
 
 Monad Transformers
 ==================
