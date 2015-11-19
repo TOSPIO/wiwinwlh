@@ -6997,7 +6997,7 @@ Feynman
 Attoparsec
 ----------
 
-Attoparsec 是一种像 Parsec 一样的解析器组合子， 但是Attoparsec比Parsec更适合大文本和二进制文件的批量解析，而不是把语言语法解析到ASTs。如果写的合适，Attoparsec会[极其有效]。 (http://www.serpentine.com/blog/2014/05/31/attoparsec/).
+Attoparsec 是一种像 Parsec 一样的解析器组合子， 但是Attoparsec比Parsec更适合大文本和二进制文件的批量解析，而不是把语言语法解析到ASTs。如果写的合适，Attoparsec会[极其有效](http://www.serpentine.com/blog/2014/05/31/attoparsec/)。 
 
 Parsec 和 Attoparsec 一个值得注意的区别是，回溯操作符(``try``)在Attoparsec中并不存在（not present），它是映射到Attoparsec的不同潜在解析模型上的。
 
