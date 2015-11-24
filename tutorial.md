@@ -6867,21 +6867,22 @@ See: [Diagrams Quick Start Tutorial](http://projects.haskell.org/diagrams/doc/qu
 Gloss
 -----
 
-Parsing
+解析器
 =======
 
 Parsec
 ------
 
-用解析器组合子来解析Haskell是非常普遍的，解析器组合子（*Parser Combinators*）可以通过写代码生成解析器，这些解析器与解析语法本身非常相似！  
+在Haskell里进行语法解析，人们常常会用到一类库，称作*解析器组合子（Parser Combinators）*。它可以让我们使用代码来生成解析器，而这些解析器与解析语法本身非常相似！
+              组合子
 -----------   ------------
-``<|>``       操作符会在第一个实参解析完后再进行第二个实参解析，这可以串成一个选择序列。
-``many``      需要任意数量的模式去匹配给定模式，然后返回一个匹配模式的列表。
-``many1``     跟many一样，但是many1要求至少有一个模式是匹配的。
-``optional``  会有选择地解析一个给定模式并返回这个模式的值作为一种可能性。
-``try``       回溯操作符可以让我们解析模糊匹配表达式，并重启一个不同的模式。
+``<|>``       称为“选择操作符”，先匹配第一个参数，匹配不到再去匹配第二个。可以链式使用来生成多个匹配选项。
+``many``      使用给定模式消耗任意数量的模式，并返回由它们组成的列表。
+``many1``     和many相似，但至少要有一次成功匹配。
+``optional``  选择性匹配，返回一个Maybe值。
+``try``       称为“回溯操作符”，若匹配失败，不会消耗任何输入，使用下一个模式重新匹配。
 
-Parsec有两种风格，你可以选择用monads或applicatives写。
+Parsec有单子和应用式函子两种使用风格。
 
 ```haskell
 parseM :: Parser Expr
@@ -6892,17 +6893,17 @@ parseM = do
   return $ Add a b
 ```
 
-上面代码用应用组合子重写，如下：
+若写成应用式函子风格，则使用应用式组合子，如下：
 
 ```haskell
--- | Sequential application.
+-- | 顺序应用。
 (<*>) :: f (a -> b) -> f a -> f b
 
--- | Sequence actions, discarding the value of the first argument.
+-- | 顺序应用，抛弃第一个值。
 (*>) :: f a -> f b -> f b
 (*>) = liftA2 (const id)
 
--- | Sequence actions, discarding the value of the second argument.
+-- | 顺序应用，抛弃第二个值。
 (<*) :: f a -> f b -> f a
 (<*) = liftA2 const
 ```
@@ -6912,7 +6913,7 @@ parseA :: Parser Expr
 parseA = Add <$> identifier <* char '+' <*> identifier
 ```
 
-比如，如果我们想解析简单的匿名表达式，我们可以编码解析器逻辑作为这些组合子的组成成分，when evaluated under with the``parse``，这些组合子会生成线性解析器。
+现在我们要解析一个简单的λ表达式，可以把这些组合子合并，并使用``parse``函数来得到最终的解析器。
 
 ~~~~ {.haskell include="src/24-parsing/simple_parser.hs"}
 ~~~~
@@ -6920,7 +6921,7 @@ parseA = Add <$> identifier <* char '+' <*> identifier
 自定义词法分析器(Custom Lexer)
 ------------
 
-在前面的例子中，词法分析路径并不是必需的，因为每个词位会匹配到字符流中的一个连续的字符集合。如果我们想用一组有意义的符号集来扩展解析器，可以使用Parsec提供的一套函数来定义词法解析器，并用解析器组合子来整合这些词法解析器。最简单的例子是构建在内置Parsec语言上的定义，这些定义定义了一套最常见的词法组合。
+前面的例子中，输入流并不需要先通过词法分析器，因为每个词位会匹配到字符流中的一个连续的字符集合。如果我们想用一组有意义的符号集来扩展解析器，可以使用Parsec提供的一套函数来定义词法解析器，并用解析器组合子来整合这些词法解析器。最简单的例子是构建在内置Parsec语言上的定义，这些定义定义了一套最常见的词法组合。
 
 ```haskell
 haskellDef   :: LanguageDef st
