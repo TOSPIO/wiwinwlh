@@ -1498,7 +1498,7 @@ monads are the first example of a Haskell construct that is the confluence of al
 
 参见: [单子教程的普遍谬误](http://byorgey.wordpress.com/2009/01/12/abstraction-intuition-and-the-monad-tutorial-fallacy/)
 
-单子转换器
+单子转换器（Monad Transformers）
 ==================
 
 mtl库 / transformers库
