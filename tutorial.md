@@ -1498,19 +1498,17 @@ monads are the first example of a Haskell construct that is the confluence of al
 
 参见: [单子教程的普遍谬误](http://byorgey.wordpress.com/2009/01/12/abstraction-intuition-and-the-monad-tutorial-fallacy/)
 
-Monad Transformers
+单子转换器
 ==================
 
-mtl / transformers
+mtl库 / transformers库
 ------------------
 
-So the descriptions of Monads in the previous chapter are a bit of a white lie.
-Modern Haskell monad libraries typically use a more general form of these written
-in terms of monad transformers which allow us to compose monads together to form
-composite monads. The monads mentioned previously are subsumed by the special
-case of the transformer form composed with the Identity monad.
+好吧，很抱歉，其实上一章中有关单子的一些描述不够准确。目前流行的Haskell单子库一般都以一种更为通用的方式编写：
+单子转换器。它可以将多个单子进行组合形成新的单子。之前说到的那些单子实际上单子转换器的一种特殊形式，是由单子转换器加
+Identify单子复合而成的。
 
-Monad   Transformer  Type            Transformed Type
+单子     转换器        类型            转换后的类型
 ------  -----------  --------------- -------------------
 Maybe   MaybeT       ``Maybe a``     ``m (Maybe a)``
 Reader  ReaderT      ``r -> a``      ``r -> m a``
@@ -1528,15 +1526,12 @@ instance Monad m => MonadReader r (ReaderT r m)
 instance (Monoid w, Monad m) => MonadWriter w (WriterT w m)
 ```
 
-In terms of generality the mtl library is the most common general interface for
-these monads, which itself depends on the transformers library which generalizes
-the "basic" monads described above into transformers.
+mtl库是这些单子最常见的通用接口。mtl库本身依赖transformers库，它负责把之前提到的基本单子泛化为转换器形式。
 
-Transformers
+转换器
 ------------
 
-At their core monad transformers allow us to nest monadic computations in a
-stack with an interface to exchange values between the levels, called ``lift``.
+从根本上来说，单子转换器提供了将多个单子化计算过程嵌套为栈的功能，并提供了一个接口（``lift``）以便在不同层级间交换数据。
 
 ```haskell
 lift :: (Monad m, MonadTrans t) => m a -> t m a
@@ -1554,23 +1549,23 @@ instance MonadIO IO where
     liftIO = id
 ```
 
-Just as the base monad class has laws, monad transformers also have several laws:
+和单子一样，单子转换器也遵循几个定律。
 
-**Law #1**
+**定律1**
 
 ```haskell
 lift . return = return
 ```
 
-**Law #2**
+**定律2**
 
 ```haskell
 lift (m >>= f) = lift m >>= (lift . f)
 ```
 
-Or equivalently:
+或等价地：
 
-**Law #1**
+**1**
 
 ```haskell
   lift (return x)
@@ -1578,7 +1573,7 @@ Or equivalently:
 = return x
 ```
 
-**Law #2**
+**2**
 
 ```haskell
   do x <- lift m
@@ -1588,18 +1583,16 @@ Or equivalently:
             f x
 ```
 
-It's useful to remember that transformers compose outside-in but are unrolled inside out.
+值得记住的是，单子转换器的组合过程由外而内进行，展开过程由内而外进行。
 
 ![](img/transformer_unroll.png)
 
-See: [Monad Transformers: Step-By-Step](http://www.cs.virginia.edu/~wh5a/personal/Transformers.pdf)
+参见: [Monad Transformers: Step-By-Step](http://www.cs.virginia.edu/~wh5a/personal/Transformers.pdf)
 
 ReaderT
 -------
 
-For example, there exist three possible forms of th Reader monad. The first is
-the Haskell 98 version that no longer exists but is useful for pedagogy. The other two
-are the *transformers* variant and the *mtl* variants.
+比如说，Reader单子有三种形式，第一种是Haskell 98版的实现，已经弃用，但是适于说明。另外两种分别是*transformers*变体和*mtl*变体
 
 *Reader*
 
@@ -1638,7 +1631,7 @@ instance (Monad m) => MonadReader r (ReaderT r m) where
   local f m = ReaderT $ \r -> runReaderT m (f r)
 ```
 
-So hypothetically the three variants of ask would be:
+所以对应的三个``ask``版本应该是：
 
 ```haskell
 ask :: Reader r a
@@ -1646,37 +1639,31 @@ ask :: Monad m => ReaderT r m r
 ask :: MonadReader r m => m r
 ```
 
-In practice only the last one is used in modern Haskell.
+实践中，比较现代的Haskell代码只使用最后一种。
 
-Basics
+基础
 ------
 
-The most basic use requires us to use the T-variants of each of the monad transformers for the outer
-layers and to explicit ``lift`` and ``return`` values between each the layers. Monads have kind ``(* -> *)``
-so monad transformers which take monads to monads have ``((* -> *) -> * -> *)``:
+最基本的用法是对外层的每个单子使用T版本的转换器，并显式地使用``lift``和``return``在层间交换数据。单子的类型构造器类型是``(* -> *)``，
+因此，把单子变为新的单子的转换器的构造器类型应该是``((* -> *) -> * -> *)``
 
 ```haskell
 Monad (m :: * -> *)
 MonadTrans (t :: (* -> *) -> * -> *)
 ```
 
-So for example if we wanted to form a composite computation using both the Reader and Maybe monads we can now
-put the Maybe inside of a ``ReaderT`` to form ``ReaderT t Maybe a``.
+比如我们想同时使用Reader和Maybe单子构造一个复合的计算过程，我们可以把Maybe放到``ReaderT``中来组成一个``ReaderT t Maybe a``。
 
 ~~~~ {.haskell include="src/03-monad-transformers/transformer.hs"}
 ~~~~
 
-The fundamental limitation of this approach is that we find ourselves ``lift.lift.lift``ing and
-``return.return.return``ing a lot.
+这种方式最大的限制是我们会写出形似``lift.lift.lift``和``return.return.return``的代码。
 
-Newtype Deriving
+Newtype类型类派生
 ----------------
 
-Newtypes let us reference a data type with a single constructor as a new distinct type, with no runtime
-overhead from boxing, unlike an algebraic datatype with single constructor.  Newtype wrappers around strings
-and numeric types can often drastically reduce accidental errors.  Using ``-XGeneralizedNewtypeDeriving`` we
-can recover the functionality of instances of the underlying type.
-
+使用newtype可以将一个具有单一构造函数的数据类型表示为一个独立的类型，并且与data不同的是，它没有运行时的性能损耗。在很多情景下，使用newtype
+包装字符串和数值类型可以极大地减少意外错误。使用``-XGeneralizedNewtypeDeriving``可以重新取得内层类型实例的功能。
 
 ~~~~ {.haskell include="src/03-monad-transformers/newtype.hs"}
 ~~~~
@@ -1689,17 +1676,14 @@ In the second argument of `(+)', namely `x'
 In the expression: v + x
 ```
 
-Using newtype deriving with the mtl library typeclasses we can produce flattened transformer types that don't
-require explicit lifting in the transform stack. For example, here is a little stack machine involving the
-Reader, Writer and State monads.
+我们可以通过使用newtype派生mtl库中的类型类来创建平铺的转换器类型，再也不需要在转换栈中地调用``lift``了。比如下面这个虚拟机，
+其中包含了Reader、Writer和State单子。
 
 ~~~~ {.haskell include="src/03-monad-transformers/newtype_deriving.hs"}
 ~~~~
 
-Pattern matching on a newtype constructor compiles into nothing. For example
-the``extractB`` function does not scrutinize the ``MkB`` constructor like the
-``extractA`` does, because ``MkB`` does not exist at runtime, it is purely a
-compile-time construct.
+对一个newtype构造器使用模式匹配在编译时不会生成相关代码，比如下面的代码中，``extractB``函数并不会匹配``MkB``构造函数，
+因为``MkB``在运行时并不存在，仅仅是编译时的一个临时结构，而``extractA``则不同。
 
 ```haskell
 data A = MkA Int
@@ -1712,21 +1696,19 @@ extractB :: B -> Int
 extractB (MkB x) = x
 ```
 
-Efficiency
+效率
 ----------
 
-The second monad transformer law guarantees that sequencing consecutive lift operations is semantically
-equivalent to lifting the results into the outer monad.
+单子转换器的第二条定律确保连续使用lift操作在语义上等同于将运算结果直接lift到外层单子。
 
 ```haskell
 do x <- lift m  ==  lift $ do x <- m
    lift (f x)                 f x
 ```
 
-Although they are guaranteed to yield the same result, the operation of lifting the results between the monad
-levels is not without cost and crops up frequently when working with the monad traversal and looping
-functions. For example, all three of the functions on the left below are less efficient than the right hand
-side which performs the bind in the base monad instead of lifting on each iteration.
+虽然结果肯定是相同的，但是在不同单子层级间进行lift操作并不是毫无代价（and crops up frequently when working with the monad traversal
+and looping functions.）。 比如，下面左边的三个函数在效率上较之右边来得差（which performs the bind in the base monad instead
+of lifting on each iteration）。
 
 ```haskell
 -- Less Efficient      More Efficient
@@ -1735,7 +1717,7 @@ mapM_ (lift . f) xs == lift (mapM_ f xs)
 forM_ xs (lift . f) == lift (forM_ xs f)
 ```
 
-Monad Morphisms
+单子态射
 ---------------
 
 ```haskell
@@ -1750,7 +1732,7 @@ squash :: (Monad m, MMonad t) => t (t m) a -> t m a
 
 TODO
 
-See: [mmorph](https://hackage.haskell.org/package/mmorph)
+参见: [mmorph](https://hackage.haskell.org/package/mmorph)
 
 Language Extensions
 ===================
