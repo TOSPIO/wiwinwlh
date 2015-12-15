@@ -1734,26 +1734,28 @@ TODO
 
 参见: [mmorph](https://hackage.haskell.org/package/mmorph)
 
-Language Extensions
+语言扩展
 ===================
 
 It's important to distinguish between different categories of language extensions:
+我们必须注意区分不同类别的语言扩展。
 
+把扩展归分为**常用**和**专用**的过程本身带有非常严重的主观色彩。搞类型系统研究的和搞数据库的理解可能完全不同。所以下面的分类是一种保守的估计。
+我们随便定一种分类标准，认为``FlexibleInstances``和``OverloadedStrings``是“常用的”，而``GADTs``和``TypeFamilies``是“专用的”。
 The inherent problem with classifying the extensions into the **General** and **Specialized** categories is that
 it's a subjective classification. Haskellers who do type astronautics will have a very different
 interpretation of Haskell than people who do database programming. As such this is a conservative assessment,
 as an arbitrary baseline let's consider ``FlexibleInstances`` and ``OverloadedStrings`` "everyday" while
 ``GADTs`` and ``TypeFamilies`` are "specialized".
 
-**Key**
+**列头说明**
 
-* *Benign* implies that importing the extension won't change the semantics of the module if not used.
-* *Historical* implies that one shouldn't use this extension, it's in GHC purely for backwards compatibility.
-  Sometimes these are dangerous to enable.
+* *良性* 表示如果导入了扩展但并未使用，则不会对模块的语义产生影响。
+* *历史* 表示不应使用，甚至强行使用会带来危险。保留这些扩展的的目的纯粹是为了向后兼容。
 
 <extensions></extensions>
 
-See: [GHC Extension Reference](http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/flag-reference.html#idp14615552)
+参见: [GHC Extension Reference](http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/flag-reference.html#idp14615552)
 
 The Benign
 ----------
