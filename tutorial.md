@@ -2016,9 +2016,10 @@ So now we can write an eliminator and constructor for arrow type very naturally.
 ~~~~ {.haskell include="src/04-extensions/patterns.hs"}
 ~~~~
 
-Laziness
+惰性
 ========
 
+又是一个重墨铺陈的主题。Haskell界现在
 Again, a subject on which *much* ink has been spilled. There is an ongoing
 discussion in the land of Haskell about the compromises between lazy and strict
 evaluation, and there are nuanced arguments for having either paradigm be the
@@ -2798,11 +2799,10 @@ instance IsList [a] where
 ~~~~ {.haskell include="src/07-text-bytestring/overloadedlist.hs"}
 ~~~~
 
-Applicatives
+应用式函子
 ============
 
-Like monads Applicatives are an abstract structure for a wide class of computations that sit between functors
-and monads in terms of generality.
+和单子一样，应用式函子也是一种表达计算方式的抽象结构，从通用性来讲介乎函子和单子之间。
 
 ```haskell
 pure :: Applicative f => a -> f a
@@ -2810,7 +2810,7 @@ pure :: Applicative f => a -> f a
 (<*>) :: f (a -> b) -> f a -> f b
 ```
 
-As of GHC 7.6, Applicative is defined as:
+从GHC 7.6开始，应用式函数的定义变为如下形式：
 
 ```haskell
 class Functor f => Applicative f where
@@ -2821,7 +2821,7 @@ class Functor f => Applicative f where
 (<$>) = fmap
 ```
 
-With the following laws:
+应用式函子定律如下：
 
 ```haskell
 pure id <*> v = v
@@ -2830,7 +2830,7 @@ u <*> pure y = pure ($ y) <*> u
 u <*> (v <*> w) = pure (.) <*> u <*> v <*> w
 ```
 
-As an example, consider the instance for Maybe:
+我们以Maybe举例：
 
 ```haskell
 instance Applicative Maybe where
@@ -2840,15 +2840,13 @@ instance Applicative Maybe where
   Just f <*> Just x = Just (f x)
 ```
 
-As a rule of thumb, whenever we would use ``m >>= return . f`` what we probably want is an applicative
-functor, and not a monad.
+如果你想写``m >>= return . f``这样的代码，那么很可能应用式单子更适合。这是一个比较通用的准则。
 
 ~~~~ {.haskell include="src/08-applicatives/applicative.hs"}
 ~~~~
 
-The pattern ``f <$> a <*> b ...`` shows up so frequently that there are a family
-of functions to lift applicatives of a fixed number arguments.  This pattern
-also shows up frequently with monads (``liftM``, ``liftM2``, ``liftM3``).
+我们经常会看到形似``f <$> a <*> b ...``这样的代码，于是有一类函数专门用来将应用式函子提升为接收
+固定个数参数的形式。单子中也有类似的一类函数（``liftM``、``liftM2``、``liftM3``）
 
 ```haskell
 liftA :: Applicative f => (a -> b) -> f a -> f b
@@ -2861,14 +2859,13 @@ liftA3 :: Applicative f => (a -> b -> c -> d) -> f a -> f b -> f c -> f d
 liftA3 f a b c = f <$> a <*> b <*> c
 ```
 
-Applicative also has functions ``*>`` and ``<*`` that sequence applicative
-actions while discarding the value of one of the arguments. The operator ``*>``
-discard the left while ``<*`` discards the right. For example in a monadic
+此外，还有两个函数``*>``和``<*``，用于顺序执行应用式函子，同时舍弃其中一个结果。``*>``舍弃左边
+的结果，而``<*``舍弃右边的结果。例如在某些单子化的解析器组合子类库中，``*>``使用左右两边的解析器
+进行解析，但是只保留右边的解析结果（译者注：原文（For example in a monadic
 parser combinator library the ``*>`` would parse with first parser argument but
-return the second.
+return the second.）表达不是很明确）。
 
-The Applicative functions ``<$>`` and ``<*>`` are generalized by ``liftM`` and
-``ap`` for monads.
+应用式函子中的函数``<$>``和``<*>``是由单子函数``liftM``和``ap``演变而来。
 
 ```haskell
 import Control.Monad
@@ -2883,7 +2880,7 @@ apl :: Applicative f => f a -> f b -> f (C a b)
 apl a b = C <$> a <*> b
 ```
 
-See: [Applicative Programming with Effects](http://www.soi.city.ac.uk/~ross/papers/Applicative.pdf)
+参见: [Applicative Programming with Effects](http://www.soi.city.ac.uk/~ross/papers/Applicative.pdf)
 
 Typeclass Hierarchy
 -------------------
@@ -3288,15 +3285,14 @@ See:
 * [Safe](http://hackage.haskell.org/package/safe)
 
 
-Advanced Monads
+高端单子
 ===============
 
-Function Monad
+函数单子
 --------------
 
-If one writes Haskell long enough one might eventually encounter the curious beast that is the ``((->) r)``
-monad instance. It generally tends to be non-intuitive to work with, but is quite simple when one considers it
-as an unwrapped Reader monad.
+如果你接触Haskell的时候够长，你最终会遇到这个奇葩：``((->) r)``。虽然大家普遍觉得这货用作单子非常别扭，但如果你把它考虑成一个
+拆开了的Reader单子，一切就显而易见了。
 
 ```haskell
 instance Functor ((->) r) where
@@ -3307,13 +3303,13 @@ instance Monad ((->) r) where
   f >>= k = \r -> k (f r) r
 ```
 
-This just uses a prefix form of the arrow type operator.
+它仅仅使用了“->”类型操作符的前缀形式。
 
 ~~~~ {.haskell include="src/10-advanced-monads/function.hs"}
 ~~~~
 
 ```haskell
-type Reader r = (->) r -- pseudocode
+type Reader r = (->) r -- 伪代码
 
 instance Monad (Reader r) where
   return a = \_ -> a
@@ -3329,11 +3325,10 @@ runReader' :: (r -> a) -> r -> a
 runReader' = id
 ```
 
-RWS Monad
+RWS单子
 ---------
 
-The RWS monad combines the functionality of the three monads discussed above, the **R**eader, **W**riter,
-and **S**tate. There is also a ``RWST`` transformer.
+RWS单子结合了之前说过的**R**eader、**W**riter、**S**tate三种单子的特性。它还有对应的转换器版本，叫作``RWST``。
 
 ```haskell
 runReader :: Reader r a -> r -> a
@@ -3341,7 +3336,7 @@ runWriter :: Writer w a -> (a, w)
 runState  :: State s a -> s -> (a, s)
 ```
 
-These three eval functions are now combined into the following functions:
+这三个执行函数经过组合成为了下面三个函数：
 
 ```haskell
 runRWS  :: RWS r w s a -> r -> s -> (a, s, w)
@@ -3352,7 +3347,7 @@ evalRWS :: RWS r w s a -> r -> s -> (a, w)
 ~~~~ {.haskell include="src/10-advanced-monads/rws.hs"}
 ~~~~
 
-The usual caveat about Writer laziness also applies to RWS.
+有关Writer惰性特征的注意事项对RWS同样适用。
 
 
 Cont
