@@ -1742,11 +1742,6 @@ It's important to distinguish between different categories of language extension
 
 把扩展归分为**常用**和**专用**的过程本身带有非常严重的主观色彩。搞类型系统研究的和搞数据库的理解可能完全不同。所以下面的分类是一种保守的估计。
 我们随便定一种分类标准，认为``FlexibleInstances``和``OverloadedStrings``是“常用的”，而``GADTs``和``TypeFamilies``是“专用的”。
-The inherent problem with classifying the extensions into the **General** and **Specialized** categories is that
-it's a subjective classification. Haskellers who do type astronautics will have a very different
-interpretation of Haskell than people who do database programming. As such this is a conservative assessment,
-as an arbitrary baseline let's consider ``FlexibleInstances`` and ``OverloadedStrings`` "everyday" while
-``GADTs`` and ``TypeFamilies`` are "specialized".
 
 **列头说明**
 
@@ -1757,11 +1752,10 @@ as an arbitrary baseline let's consider ``FlexibleInstances`` and ``OverloadedSt
 
 参见: [GHC Extension Reference](http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/flag-reference.html#idp14615552)
 
-The Benign
+良性扩展
 ----------
 
-It's not obvious which extensions are the most common but it's fairly safe to
-say that these extensions are benign and are safely used extensively:
+可能没办法一眼看出哪些扩展是最常用的，但可以肯定的是，下面这些扩展较为安全和被广泛使用。
 
 * NoMonomorphismRestriction
 * FlexibleContexts
@@ -1776,37 +1770,32 @@ say that these extensions are benign and are safely used extensively:
 * DeriveDataTypeable
 * ScopedTypeVariables
 
-The Dangerous
+危险扩展
 -------------
 
-GHC's typechecker sometimes just casually tells us to enable language extensions when it can't solve certain
-problems. These include:
+GHC的类型检查器有时随意让你打开某些扩展，而这些扩展并不能真正解决问题，包括：
 
 * DatatypeContexts
 * OverlappingInstances
 * IncoherentInstances
 * ImpredicativeTypes
 
-These almost always indicate a design flaw and shouldn't be turned on to remedy the error at hand, as
-much as GHC might suggest otherwise!
+如果你需要启用这些扩展，那几乎一定是设计上的缺陷，不要听信GHC的建议而试图通过启用这些扩展来解决眼前的问题。
 
-Inference
+类型推断
 ---------
 
-Inference in Haskell is generally quite accurate, although there are several boundary cases that tend to cause
-problems. Consider the two functions
+一般来说，Haskell的类型推断相当准确，但也存在一些可能导致问题的特殊情况。考虑下面两个函数：
 
-**Mutually Recursive Binding Groups**
+**互递归绑定组**
 
 ```haskell
 f x = const x g
 g y = f 'A'
 ```
 
-The inferred type signatures are correct in their usage, but don't represent the most general signatures. When
-GHC analyzes the module it analyzes the dependencies of expressions on each other, groups them together, and
-applies substitutions from unification across mutually defined groups. As such the inferred types may not be
-the most general types possible, and an explicit signature may be desired.
+推导出来的类型在使用上没有问题，但是并不足够泛化。GHC先分析表达式之间的依赖关系，将他们分组，并用同一替换的方式确定类型。因此，推导出来的类型可能
+不是最泛化的结果，此时你需要显式地指定类型。
 
 ```haskell
 -- Inferred types
@@ -1818,7 +1807,7 @@ f :: a -> a
 g :: a -> Char
 ```
 
-**Polymorphic recursion**
+**多态递归**
 
 ```haskell
 data Tree a = Leaf | Bin a (Tree (a, a))
@@ -1827,10 +1816,8 @@ size Leaf = 0
 size (Bin _ t) = 1 + 2 * size t
 ```
 
-The problem with this expression is because the inferred type variable ``a``  in
-``size`` spans two possible types (``a`` and ``(a,a)``), the recursion is
-polymorphic. These two types won't pass the occurs-check of the typechecker and
-it yields an incorrect inferred type.
+这段代码的问题在于``size``中的类型变量``a``跨越了两种类型（``a``和``(a,a)``）。这是一个多态递归。
+类型检查器的occurs-check将会失败，推断出错误的类型。
 
 ```haskell
     Occurs check: cannot construct the infinite type: t0 = (t0, t0)
@@ -1843,6 +1830,7 @@ it yields an incorrect inferred type.
 
 Simply adding an explicit type signature corrects this. Type inference using polymorphic recursion is
 undecidable in the general case.
+加上的类型签名就可以解决问题。一般情况下多态递归形式的类型推断是不可判定的。
 
 ```haskell
 size :: Tree a -> Int
@@ -1850,22 +1838,20 @@ size Leaf = 0
 size (Bin _ t) = 1 + 2 * size t
 ```
 
-See: [Static Semantics of Function and Pattern Bindings](https://www.haskell.org/onlinereport/haskell2010/haskellch4.html#x10-880004.5)
+参见: [Static Semantics of Function and Pattern Bindings](https://www.haskell.org/onlinereport/haskell2010/haskellch4.html#x10-880004.5)
 
-Monomorphism Restriction
+单态限定
 ------------------------
 
-The most common edge case of the inference is known as the dreaded *monomorphic restriction*.
+类型推断有一种常见的边缘情况——*单态限定*
 
-When the toplevel declarations of a module are generalized the monomorphism restricts that toplevel values
-(i.e. expressions not under a lambda ) whose type contains the subclass of the ``Num`` type from the Prelude
-are not generalized and instead are instantiated with a monotype tried sequentially from the list specified by
-the ``default`` which is normally `Integer`, then `Double`.
+当模块顶层的变量定义（不在lambda中的表达式）是多态定义，单态限定意味着：如果这些变量值的类型是``Num``的实例类型，则这些值会被强制使用单态类型填充，
+这个类型由``default``指定的类型依次尝试，默认情况下，先是`Integer`，再是`Double`。
 
 ~~~~ {.haskell include="src/04-extensions/monomorphism.hs"}
 ~~~~
 
-As of GHC 7.8, the monomorphism restriction is switched off by default in GHCi.
+从GHC 7.8起，GHCi默认关闭单态限定。
 
 ```haskell
 λ: set +t
@@ -1884,23 +1870,17 @@ it :: Num a => a
 Safe Haskell
 ------------
 
-As everyone eventually finds out there are several functions within the implementation of GHC ( not the Haskell
-language ) that can be used to subvert the type-system, they are marked with the prefix ``unsafe``.  These
-functions exist only for when one can manually prove the soundness of an expression but can't express this
-property in the type-system. Using these functions without fulfilling the proof obligations will cause all
-measure of undefined behavior with unimaginable pain and suffering, and are <span style="font-weight:
-bold">strongly discouraged</span>. When initially starting out with Haskell there are no legitimate reason to
-use these functions at all, period.
+大家最终会发现，在GHC实现（而不是Haskell语言）当中，有些函数会艹翻Haskell的类型系统，这些函数以``unsafe``作为前缀。
+这些函数只有在你能确信代码是可靠的，并且类型系统无法表达时才应该使用。如果在不能证实代码安全可靠的情况下擅自使用，我送你四个大字：回家等死吧。
+如果你刚开始用Haskell做一些东西，相信我，别用。
 
 ```haskell
 unsafeCoerce :: a -> b
 unsafePerformIO :: IO a -> a
 ```
 
-The Safe Haskell language extensions allow us to restrict the use of unsafe language features using ``-XSafe``
-which restricts the import of modules which are themselves marked as Safe. It also forbids the use of certain
-language extensions (``-XTemplateHaskell``) which can be used to produce unsafe code. The primary use case of
-these extensions is security auditing.
+Safe Haskell相关的扩展可以禁用不安全的语言特性。通过``-XSafe``扩展，你只能导入被标记为"Safe"的模块。它还禁止使用某些语言扩展（``-XTemplateHaskell``），
+因为它可以生成不安全的代码。这些扩展的主要用于安全审计。
 
 ```haskell
 {-# LANGUAGE Safe #-}
@@ -1915,9 +1895,9 @@ Unsafe.Coerce: Can't be safely imported!
 The module itself isn't safe.
 ```
 
-See: [Safe Haskell](https://ghc.haskell.org/trac/ghc/wiki/SafeHaskell)
+参见: [Safe Haskell](https://ghc.haskell.org/trac/ghc/wiki/SafeHaskell)
 
-Pattern Guards
+模式守卫
 --------------
 
 ```haskell
@@ -1931,16 +1911,16 @@ combine env x y
    | otherwise = Nothing
 ```
 
-View Patterns
+视图模式
 -------------
 
 ~~~~ {.haskell include="src/04-extensions/views.hs"}
 ~~~~
 
-Misc Syntax Extensions
+其他语法扩展
 ----------------------
 
-**Tuple Sections**
+**元组截面**
 
 ```haskell
 {-# LANGUAGE TupleSections #-}
@@ -1952,7 +1932,7 @@ second :: a -> (Bool, a)
 second = (True,)
 ```
 
-**Multi-way if-expressions**
+**多路if表达式**
 
 ```haskell
 {-# LANGUAGE MultiWayIf #-}
@@ -1969,7 +1949,7 @@ operation x =
 ~~~~ {.haskell include="src/04-extensions/lambdacase.hs"}
 ~~~~
 
-**Package Imports**
+**带包名导入**
 
 ```haskell
 import qualified "mtl" Control.Monad.Error as Error
@@ -1977,10 +1957,9 @@ import qualified "mtl" Control.Monad.State as State
 import qualified "mtl" Control.Monad.Reader as Reader
 ```
 
-**Record WildCards**
+**记录通配符**
 
-Record wild cards allow us to expand out the names of a record as variables
-scoped as the labels of the record implicitly.
+记录通配符可以隐式地将字段名用作变量。
 
 ~~~~ {.haskell include="src/04-extensions/wildcards.hs"}
 ~~~~
