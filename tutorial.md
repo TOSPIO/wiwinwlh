@@ -1484,13 +1484,6 @@ main :: IO ()
 main = bind $dMonadIO getLine (\x -> bind $dMonadIO putStrLn (\_ -> return $dMonadIO ()))
 ```
 
-Now, all of these transformations are trivial once we understand them, they're
-just typically not discussed. In my opinion the fundamental fallacy of monad
-tutorials is not that intuition for monads is hard to convey ( nor are metaphors
-required! ), but that novices often come to monads with an incomplete
-understanding of points (1), (2), and (3) and then trip on the simple fact that
-monads are the first example of a Haskell construct that is the confluence of
-all three.
 一般不会对转换过程作出讨论，而一旦我们真正领会了转换过程内在的逻辑，就可以信手拈来。
 我觉得单子教程普遍存在的根本错误并不是对单子的直观感受难以表述清晰（不要用类比或隐喻的手法！），而是
 初学者们学习单子时没有对上面的(1)、(2)、(3)点有足够深刻的认识（TODO: and then trip on the simple fact that
@@ -2055,32 +2048,30 @@ Call-by-value  Strict        arguments evaluated before function entered
 Call-by-name   Non-strict    arguments passed unevaluated
 Call-by-need   Non-strict    arguments passed unevaluated but an expression is only evaluated once (sharing)
 
-Seq and WHNF
+Seq和弱首范式
 ------------
 
-A term is said to be in *weak head normal-form* if the outermost constructor or
-lambda cannot be reduced further. A term is said to be in *normal form* if it is
-fully evaluated and all sub-expressions and thunks contained within are
-evaluated.
+一个表达式，如果它的最外层构造子或lambda表达式不能继续归约，则称为*弱首范式*。一个表达式，如果已经完全求值，其包含的子表达式和次程式
+都完成求值，则称它为*范式*。
 
 ```haskell
--- In Normal Form
+-- 范式
 42
 (2, "foo")
 \x -> x + 1
 
--- Not in Normal Form
+-- 非范式
 1 + 2
 (\x -> x + 1) 2
 "foo" ++ "bar"
 (1 + 1, "foo")
 
--- In Weak Head Normal Form
+-- 弱首范式
 (1 + 1, "foo")
 \x -> 2 + 2
 'f' : ("oo" ++ "bar")
 
--- Not In Weak Head Normal Form
+-- 非弱首范式
 1 + 1
 (\x -> x + 1) 2
 "foo" ++ "bar"
@@ -2861,12 +2852,12 @@ apl a b = C <$> a <*> b
 
 参见: [Applicative Programming with Effects](http://www.soi.city.ac.uk/~ross/papers/Applicative.pdf)
 
-Typeclass Hierarchy
+类型类之间的继承关系
 -------------------
 
-In principle every monad arises out of an applicative functor (and by corollary a functor) but due to
-historical reasons Applicative isn't a superclass of the Monad typeclass. A hypothetical fixed Prelude might
-have:
+原则上，所有的单子必须同时是一个应用式函子（那么显然也必须是一个函子）。但是由于历史原因，Applicative不是Monad类型类的超类。
+（译者注：从GHC 7.10起，Applicative已经成为Monad的超类，参见：[](https://wiki.haskell.org/Functor-Applicative-Monad_Proposal)）
+设想中，Prelude中应该有下面的定义：
 
 ```haskell
 class Functor f where
@@ -2887,7 +2878,7 @@ join :: Monad m => m (m a) -> m a
 join x = x >>= id
 ```
 
-See: [Functor-Applicative-Monad Proposal](http://wiki.haskell.org/Functor-Applicative-Monad_Proposal)
+参见: [Functor-Applicative-Monad Proposal](http://wiki.haskell.org/Functor-Applicative-Monad_Proposal)
 
 Alternative
 -----------
@@ -2928,17 +2919,15 @@ Just 5
 These instances show up very frequently in parsers where the alternative operator can model alternative parse
 branches.
 
-Polyvariadic Functions
+可变参数个数的函数
 ----------------------
 
-One surprising application of typeclasses is the ability to construct functions which take an arbitrary number
-of arguments by defining instances over function types. The arguments may be of arbitrary type, but the
-resulting collected arguments must either converted into a single type or unpacked into a sum type.
+类型类有一个令人称奇的用处，用它可以构造接收任意数量参数的函数。参数可以是任意类型，但是最后收集到的参数必须转换成同一类型或者用聚合的办法组装起来。
 
 ~~~~ {.haskell include="src/08-applicatives/variadic.hs"}
 ~~~~
 
-See: [Polyvariadic functions](http://okmij.org/ftp/Haskell/polyvariadic.html)
+参见: [Polyvariadic functions](http://okmij.org/ftp/Haskell/polyvariadic.html)
 
 
 Category
@@ -8938,35 +8927,30 @@ getInputLine :: String -> InputT IO (Maybe String)
 Template Haskell
 ================
 
-Quasiquotation
+准引用（Quasiquotation）
 -------------
 
-Quasiquotation allows us to express "quoted" blocks of syntax that need not necessarily be be the syntax of
-the host language, but unlike just writing a giant string it is instead parsed into some AST datatype in the
-host language. Notably values from the host languages can be injected into the custom language via
-user-definable logic allowing information to flow between the two languages.
+使用准引用可以表达用宿主语言以外的语法定义的语法块。和写一大堆字符串不同，这部分内容会被解析为宿主语言支持的AST（抽象语法树）数据。可以通过
+用户定义逻辑将宿主语言中的数据注入到自定义的语言中去，从而实现两者之间的数据交换。
 
-In practice quasiquotation can be used to implement custom domain specific languages or integrate with other
-general languages entirely via code-generation.
+在实践中，使用准引用可以实现DSL（领域特定语言）或完全通过代码生成来与其他语言进行集成。
 
-We've already seen how to write a Parsec parser, now let's write a quasiquoter for it.
+我们已经介绍过如何写一个Parsec解析器，下面我们为它写一个准引用。
 
 ~~~~ {.haskell include="src/31-template-haskell/Quasiquote.hs"}
 ~~~~
 
-Testing it out:
+测试一下看看：
 
 ~~~~ {.haskell include="src/31-template-haskell/quasiquote_use.hs"}
 ~~~~
 
-One extremely important feature is the ability to preserve position information so that errors in the embedded
-language can be traced back to the line of the host syntax.
+这里有一个至关重要的特性：通过保留位置信息，可以由内嵌语言中的错误回溯到宿主语言代码的特定行。
 
-language-c-quote
+C的准引用
 ----------------
 
-Of course since we can provide an arbitrary parser for the quoted expression, one might consider embedding the
-AST of another language entirely. For example C or CUDA C.
+由于可以实现任意的解析器，你可能会希望完全嵌入另一种语言的AST，比如C或CUDA C。
 
 ```haskell
 hello :: String -> C.Func
@@ -8981,8 +8965,7 @@ int main(int argc, const char *argv[])
 |]
 ```
 
-Evaluating this we get back an AST representation of the quoted C program which we can manipulate or print
-back out to textual C code using ``ppr`` function.
+对它求值，则可以得到这段C程序的AST。接着我们就可以对它进行操作，或使用``ppr``函数输出回C代码。
 
 ```haskell
 Func
@@ -9008,17 +8991,15 @@ Func
   ]
 ```
 
-In this example we just spliced in the anti-quoted Haskell string in the printf statement, but we can pass
-many other values to and from the quoted expressions including identifiers, numbers, and other quoted
-expressions which implement the ``Lift`` type class.
+上面的例子中，我们在printf语句中嵌入了反向引用的Haskell字符串，除此之外，我们还可以传入和传出其他类型的数据，如标识符、数字，或其他实现了
+``Lift``类型类的表达式。
 
-For example now if we wanted programmatically generate the source for a CUDA kernel to run on a GPU we can
-switch over the CUDA C dialect to emit the C code.
+我们可以使用CUDA C方言来生成生成一段C程序，可以通过CUDA kernel跑在GPU上。
 
 ~~~~ {.haskell include="src/31-template-haskell/cquote.hs"}
 ~~~~
 
-Running this we generate:
+执行程序，得到如下结果：
 
 ```cpp
 __global__ void saxpy(float* x, float* y)
@@ -9042,7 +9023,7 @@ int driver(float* x, float* y)
 }
 ```
 
-Run the resulting output through ``nvcc -ptx -c`` to get the PTX associated with the outputted code.
+使用``nvcc -ptx -c``执行上述输出的程序，可以得到相关的PTX（译者注：Parallel Thread Execution（并行线程执行））代码。
 
 Template Haskell
 ----------------
